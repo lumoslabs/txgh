@@ -87,11 +87,17 @@ module Txgh
     end
 
     def wrap(string, resource)
-      ResourceContents.from_string(resource, string)
+      if string
+        ResourceContents.from_string(resource, string)
+      else
+        EmptyResourceContents.new(resource)
+      end
     end
 
     def transifex_download(resource, language)
       transifex_api.download(resource, language)
+    rescue TransifexNotFoundError
+      nil
     end
 
     def git_download(resource, branch)
@@ -108,10 +114,8 @@ module Txgh
 
       ref = repo.process_all_branches? ? branch : nil
 
-      raw_resources.each do |res|
-        if resource = tx_config.resource(res['slug'], ref)
-          yield(resource) if resource.resource_slug == res['slug']
-        end
+      tx_config.resources.each do |res|
+        yield tx_config.resource(res.resource_slug, ref)
       end
     end
 
@@ -126,10 +130,6 @@ module Txgh
 
     def raw_languages
       @languages ||= transifex_api.get_languages(project.name)
-    end
-
-    def raw_resources
-      @raw_resources ||= transifex_api.get_resources(project.name)
     end
 
     def tx_config
