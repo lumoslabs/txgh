@@ -123,13 +123,13 @@ module Txgh
       return to_enum(__method__) unless block_given?
       return @languages.each(&block) if @languages
 
-      raw_languages.each do |lang|
-        yield lang['language_code']
-      end
+      raw_languages.each(&block)
     end
 
     def raw_languages
-      @languages ||= transifex_api.get_languages(project.name)
+      @raw_languages ||= transifex_api.get_languages(project.name).map do |lang|
+        lang['language_code']
+      end
     end
 
     def tx_config
