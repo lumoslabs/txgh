@@ -195,8 +195,7 @@ describe ResourceDownloader do
             outdent(%Q{
               #{language}:
                 picard: ! "enterprise (dp trans)"
-                janeway: ! "uss voyager"
-                sisko: ! "deep space nine"
+                janeway: ! "voyager (dp trans)"
             })
           ]
         end
