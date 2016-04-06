@@ -3,7 +3,7 @@ Transifex Txgh (Lumos Labs fork)
 
 [![Build Status](https://travis-ci.org/lumoslabs/txgh.svg?branch=master)](https://travis-ci.org/lumoslabs/txgh)
 
-Txgh, a mashup of "_T_ransife_x_" and "_G_it_h_ub", is a lightweight server that connects Transifex to Github via webhooks. It enables automatic translation of new content in your Github repository, and supports single-resource as well as branch-based git workflows.
+Txgh, a mashup of "Transifex" and "Github", is a lightweight server that connects Transifex to Github via webhooks. It enables automatic translation of new content in your Github repository, and supports single-resource as well as branch-based git workflows.
 
 
 How Does it Work?
@@ -200,7 +200,8 @@ Refer to the "From Rubygems" section above to get ruby and bundler installed bef
 
 2. Change directory into the newly cloned repo (`cd txgh`) and run `bundle` to install gem dependencies.
 3. Run `TXGH_CONFIG=file://path/to/config.yml bundle exec rackup`. The Txgh instance should start running.
-7. Test your Txgh instance by hitting the `health_check` endpoint as described above in the "With Docker" section, i.e. `curl -v localhost:9292/health_check`. You should get an HTTP 200 response.
+
+4. Test your Txgh instance by hitting the `health_check` endpoint as described above in the "With Docker" section, i.e. `curl -v localhost:9292/health_check`. You should get an HTTP 200 response.
 
 Running Tests
 ---
@@ -215,7 +216,7 @@ Txgh requires an Internet connection to run, since its primary function is to co
 Compatibility
 ---
 
-Txgh was developed with Ruby 2.1.6, but is probably compatible with all versions between 2.0 and 2.3, and maybe even 1.9. Your mileage may vary when running it on older versions.
+Txgh was developed with Ruby 2.1.6, but is probably compatible with all versions between 2.0 and 2.3, and maybe even 1.9. Your mileage may vary when running on older versions.
 
 Authors
 ---
