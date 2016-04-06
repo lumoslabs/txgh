@@ -175,5 +175,32 @@ describe ResourceDownloader do
         end
       )
     end
+
+    it "works even if the resource doesn't exist in transifex" do
+      allow(transifex_api).to(
+        receive(:download) do |resource, language|
+          if resource.respond_to?(:branch)
+            translations_for(resource, language)
+          else
+            raise TransifexNotFoundError
+          end
+        end
+      )
+
+      results = downloader.each.to_a
+      expect(results).to eq(
+        api_languages.map do |language|
+          [
+            "translations/#{language}/sample.yml",
+            outdent(%Q{
+              #{language}:
+                picard: ! "enterprise (dp trans)"
+                janeway: ! "uss voyager"
+                sisko: ! "deep space nine"
+            })
+          ]
+        end
+      )
+    end
   end
 end
