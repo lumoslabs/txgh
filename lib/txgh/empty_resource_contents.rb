@@ -10,10 +10,11 @@ module Txgh
       []
     end
 
-    def write_to(stream, language = nil)
+    def write_to(*args)
+      # no-op
     end
 
-    def to_s(language = nil)
+    def to_s(*args)
       ''
     end
 
@@ -31,7 +32,7 @@ module Txgh
       end
     end
 
-    def merge(other_contents, diff_hash)
+    def merge(other_contents, *args)
       other_contents
     end
 
