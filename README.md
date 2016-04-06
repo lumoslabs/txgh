@@ -167,18 +167,18 @@ Docker is by far the easiest way to run Txgh, but a close runner-up is via Rubyg
 5. Inside `config.ru` add the following lines:
 
   ```ruby
-    require 'txgh'
+  require 'txgh'
 
-    map '/' do
-      use Txgh::Application
-      use Txgh::Triggers
-      run Sinatra::Base
-    end
+  map '/' do
+    use Txgh::Application
+    use Txgh::Triggers
+    run Sinatra::Base
+  end
 
-    map '/hooks' do
-      use Txgh::Hooks
-      run Sinatra::Base
-    end
+  map '/hooks' do
+    use Txgh::Hooks
+    run Sinatra::Base
+  end
   ```
 
   Where each endpoint is mounted is entirely configurable inside this file, as is any additional middleware or your own custom endpoints you might want to add. Txgh is built on the [Rack](http://rack.github.io/) webserver stack, meaning the wide world of Rack is available to you inside this file. The `map`, `use`, and `run` methods are part of Rack's builder syntax.
@@ -195,7 +195,7 @@ Refer to the "From Rubygems" section above to get ruby and bundler installed bef
 1. Clone Txgh locally:
 
   ```bash
-    git clone git@github.com:lumoslabs/txgh.git
+  git clone git@github.com:lumoslabs/txgh.git
   ```
 
 2. Change directory into the newly cloned repo (`cd txgh`) and run `bundle` to install gem dependencies.
