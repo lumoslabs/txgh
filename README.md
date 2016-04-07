@@ -119,7 +119,7 @@ Txgh is distributed as a [Docker image](https://quay.io/repository/lumoslabs/txg
 
 ### With Docker
 
-Using Docker to run Txgh is pretty straightforward (keep in mind you'll need to have the Docker client set up wherever you want to run Txgh).
+Using Docker to run Txgh is pretty straightforward (keep in mind you'll need to have the Docker server set up wherever you want to run Txgh).
 
 First, pull the Txgh image:
 
@@ -149,6 +149,8 @@ Note that Txgh might not be available on localhost depending on how your Docker 
 ```bash
 curl -v 192.168.99.100:9292/health_check
 ```
+
+(Where 192.168.99.100 is the IP of your docker machine instance).
 
 ### From Rubygems
 
