@@ -215,7 +215,7 @@ Txgh is distributed as a [Docker image](https://quay.io/repository/lumoslabs/txg
 
 Using Docker to run Txgh is pretty straightforward (keep in mind you'll need to have the Docker server set up wherever you want to run Txgh).
 
-NOTE: You might consider using this [Docker template](https://github.com/lumoslabs/txgh-ruby-template) instead of following the instructions below. The template contains all the files and scripts you need to get up and running quickly.
+NOTE: You might consider using this [Docker template](https://github.com/lumoslabs/txgh-docker-template) instead of following the instructions below. The template contains all the files and scripts you need to get up and running quickly.
 
 First, pull the Txgh image:
 
