@@ -215,6 +215,8 @@ Txgh is distributed as a [Docker image](https://quay.io/repository/lumoslabs/txg
 
 Using Docker to run Txgh is pretty straightforward (keep in mind you'll need to have the Docker server set up wherever you want to run Txgh).
 
+NOTE: You might consider using this [Docker template](https://github.com/lumoslabs/txgh-ruby-template) instead of following the instructions below. The template contains all the files and scripts you need to get up and running quickly.
+
 First, pull the Txgh image:
 
 ```bash
@@ -250,7 +252,7 @@ curl -v 192.168.99.100:9292/health_check
 
 Docker is by far the easiest way to run Txgh, but a close runner-up is via Rubygems. You'll need to have at least Ruby 2.1 installed as well as the [bundler gem](http://bundler.io/). Installing ruby and bundler are outside the scope of this README, but I'd suggest using a ruby installer like [rbenv](https://github.com/rbenv/rbenv) or [rvm](https://rvm.io/) to get the job done. Once ruby is installed, executing `gem install bundler` should be enough to install the bundler gem.
 
-NOTE: You might consider using this [ruby template](https://github.com/lumoslabs/txgh-ruby-template) instead of following the instructions below. The template contains all the files and scripts you might need to get up and running quickly.
+NOTE: You might consider using this [ruby template](https://github.com/lumoslabs/txgh-ruby-template) instead of following the instructions below. The template contains all the files and scripts you need to get up and running quickly.
 
 1. Create a new directory for your Txgh instance.
 
