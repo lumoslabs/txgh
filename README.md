@@ -3,7 +3,7 @@ Transifex Txgh (Lumos Labs fork)
 
 [![Build Status](https://travis-ci.org/lumoslabs/txgh.svg?branch=master)](https://travis-ci.org/lumoslabs/txgh)
 
-Txgh, a mashup of "Transifex" and "Github", is a lightweight server that connects Transifex and Github via webhooks. It enables automatic translation of new content that makes its way into your Github repository, and supports single-resource as well as branch-based git workflows.
+Txgh, a mashup of "Transifex" and "Github", is a lightweight server that connects Transifex and Github via webhooks. It enables automatic translation of new content pushed to your Github repository, and supports single-resource as well as branch-based git workflows.
 
 
 How Does it Work?
