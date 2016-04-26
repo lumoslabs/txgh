@@ -87,11 +87,37 @@ module Txgh
       categories = serialize_categories(categories)
 
       if resource_exists
-        project.api.update_details(tx_resource, categories: categories)
-        project.api.update_content(tx_resource, content)
+        replace_resource(tx_resource, content, categories)
+        # project.api.update_details(tx_resource, categories: categories)
+        # project.api.update_content(tx_resource, content)
       else
-        project.api.create(tx_resource, content, categories)
+        create_resource(tx_resource, content, categories)
+        # project.api.create(tx_resource, content, categories)
       end
+    end
+
+    # This crap is necessary to force transifex to recompute the resource's
+    # translations from the translation memory. Simply updating the resource's
+    # contents doesn't re-associate translations, so you wind up with old
+    # translations when you download. Such complex. Much irritate. Wow.
+    def replace_resource(tx_resource, content, categories)
+      # 1. create new resource with modified slug
+      new_resource = tx_resource.dup
+      new_resource.instance_variable_set(
+        :@resource_slug, "#{tx_resource.resource_slug}_new"
+      )
+
+      create_resource(new_resource, content, categories)
+
+      # 2. delete old resource
+      project.api.delete(tx_resource)
+
+      # 3. rename new resource
+      project.api.update_details(new_resource, slug: tx_resource.project_slug)
+    end
+
+    def create_resource(tx_resource, content, categories)
+      project.api.create(tx_resource, content, categories)
     end
 
     def categories_for(tx_resource)
