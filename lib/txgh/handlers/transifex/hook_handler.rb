@@ -20,29 +20,38 @@ module Txgh
         def execute
           logger.info(resource_slug)
 
-          if supported_language?
-            if tx_config
-              if tx_resource
-                committer = ResourceCommitter.new(project, repo, logger)
-                committer.commit_resource(tx_resource, branch, language)
-
-                respond_with(200, true)
-              else
-                respond_with_error(
-                  404, "Could not find resource '#{resource_slug}' in config"
-                )
-              end
-            else
-              respond_with_error(
-                404, "Could not find configuration for branch '#{branch}'"
-              )
-            end
-          else
-            respond_with(304, true)
+          check_error_response || begin
+            committer = ResourceCommitter.new(project, repo, logger)
+            committer.commit_resource(tx_resource, branch, language)
+            respond_with(200, true)
           end
         end
 
         private
+
+        def check_error_response
+          check_supported_language || check_tx_config || check_tx_resource
+        end
+
+        def check_supported_language
+          respond_with(304, true) unless supported_language?
+        end
+
+        def check_tx_config
+          unless tx_config
+            respond_with_error(
+              404, "Could not find configuration for branch '#{branch}'"
+            )
+          end
+        end
+
+        def check_tx_resource
+          unless tx_resource
+            respond_with_error(
+              404, "Could not find resource '#{resource_slug}' in config"
+            )
+          end
+        end
 
         def tx_config
           @tx_config ||= Txgh::Config::TxManager.tx_config(project, repo, branch)
