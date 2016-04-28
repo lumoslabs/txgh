@@ -7,6 +7,7 @@ module Txgh
   autoload :Config,                'txgh/config'
   autoload :DiffCalculator,        'txgh/diff_calculator'
   autoload :EmptyResourceContents, 'txgh/empty_resource_contents'
+  autoload :Events,                'txgh/events'
   autoload :GithubApi,             'txgh/github_api'
   autoload :GithubRepo,            'txgh/github_repo'
   autoload :GithubRequestAuth,     'txgh/github_request_auth'
