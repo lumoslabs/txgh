@@ -10,6 +10,7 @@ module Txgh
   autoload :GithubApi,             'txgh/github_api'
   autoload :GithubRepo,            'txgh/github_repo'
   autoload :GithubRequestAuth,     'txgh/github_request_auth'
+  autoload :GithubStatus,          'txgh/github_status'
   autoload :Handlers,              'txgh/handlers'
   autoload :Hooks,                 'txgh/app'
   autoload :MergeCalculator,       'txgh/merge_calculator'
