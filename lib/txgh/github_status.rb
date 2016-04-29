@@ -35,6 +35,8 @@ module Txgh
       )
     end
 
+    private
+
     def context
       CONTEXT
     end
@@ -62,8 +64,6 @@ module Txgh
         DESCRIPTION_TEMPLATE % stat_totals
       end
     end
-
-    private
 
     def all_complete?
       stats.all? do |locale, details|
