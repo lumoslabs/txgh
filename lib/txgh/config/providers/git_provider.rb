@@ -17,9 +17,9 @@ module Txgh
         attr_reader :payload, :parser
 
         def initialize(payload, parser, options = {})
-          @payload = payload
+          @payload, inline_ref = parse_payload(payload)
           @parser = parser
-          @ref = options[:ref]
+          @ref = inline_ref || options[:ref]
           @github_repo = options[:github_repo]
         end
 
@@ -28,6 +28,14 @@ module Txgh
         end
 
         private
+
+        def parse_payload(payload)
+          if payload.include?('@')
+            payload.split('@')
+          else
+            [payload, nil]
+          end
+        end
 
         def download
           github_repo.api.download(github_repo.name, payload, ref)

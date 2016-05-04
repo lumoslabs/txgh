@@ -19,6 +19,8 @@ module Txgh
   autoload :ResourceDownloader,    'txgh/resource_downloader'
   autoload :ResourceUpdater,       'txgh/resource_updater'
   autoload :ResponseHelpers,       'txgh/response_helpers'
+  autoload :SafeGithubApi,         'txgh/safe_github_api'
+  autoload :SafeTransifexApi,      'txgh/safe_transifex_api'
   autoload :TransifexApi,          'txgh/transifex_api'
   autoload :TransifexProject,      'txgh/transifex_project'
   autoload :TransifexRequestAuth,  'txgh/transifex_request_auth'
@@ -27,6 +29,9 @@ module Txgh
   autoload :TxLogger,              'txgh/tx_logger'
   autoload :TxResource,            'txgh/tx_resource'
   autoload :Utils,                 'txgh/utils'
+
+  GithubApi = SafeGithubApi
+  TransifexApi = SafeTransifexApi
 
   class << self
     def tx_manager
