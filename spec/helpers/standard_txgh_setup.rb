@@ -20,6 +20,7 @@ module StandardTxghSetup
   let(:diff_point) { nil }
   let(:organization) { 'myorg' }
   let(:commit_message_template) { nil }  # i.e. use the default
+  let(:type) { 'YML' }
 
   let(:project_config) do
     {
@@ -59,7 +60,7 @@ module StandardTxghSetup
     file_filter = translations/<lang>/sample.yml
     source_file = sample.yml
     source_lang = en
-    type = YML
+    type = #{type}
     """
   end
 

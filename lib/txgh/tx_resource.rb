@@ -1,5 +1,6 @@
 module Txgh
   class TxResource
+    JSON_TYPES = %w(CHROME KEYVALUEJSON RESJSON)
     attr_reader :project_slug, :resource_slug, :type, :source_lang
     attr_reader :source_file, :translation_file
 
@@ -25,6 +26,10 @@ module Txgh
       end
 
       @translation_file = translation_file
+    end
+
+    def json?
+      JSON_TYPES.include?(type)
     end
 
     def L10N_resource_slug

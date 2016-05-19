@@ -9,7 +9,7 @@ COPY ./Gemfile /usr/src/app/
 COPY ./Gemfile.lock /usr/src/app/
 COPY ./txgh.gemspec /usr/src/app/
 COPY ./lib/txgh/version.rb /usr/src/app/lib/txgh/
-RUN bundle install --jobs=3 --retry=3
+RUN bundle install --jobs=3 --retry=3 --without development test
 
 COPY . /usr/src/app
 
