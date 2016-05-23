@@ -105,7 +105,9 @@ module Txgh
       raise_error!(response)
 
       json_data = JSON.parse(response.body)
-      json_data['content']
+      content = json_data['content']
+
+      tx_resource.json? ? escape_json(content) : content
     end
 
     def get_resource(project_slug, resource_slug)
@@ -151,6 +153,10 @@ module Txgh
     end
 
     private
+
+    def escape_json(text)
+      text.gsub("\r", %q(\r)).gsub("\n", %q(\n))
+    end
 
     def get_content_io(tx_resource, content)
       content_io = StringIO::new(content)

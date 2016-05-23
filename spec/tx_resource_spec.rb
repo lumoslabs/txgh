@@ -3,9 +3,11 @@ require 'spec_helper'
 include Txgh
 
 describe TxResource do
+  let(:type) { 'type' }
+
   let(:resource) do
     TxResource.new(
-      'project_slug', 'resource_slug', 'type',
+      'project_slug', 'resource_slug', type,
       'source_lang', 'source_file', 'ko-KR:ko', 'translation_file'
     )
   end
@@ -29,6 +31,20 @@ describe TxResource do
   describe '#slugs' do
     it 'returns an array containing the project and resource slugs' do
       expect(resource.slugs).to eq(%w(project_slug resource_slug))
+    end
+  end
+
+  describe '#json?' do
+    it 'returns false if the resource is not in JSON format' do
+      expect(resource).to_not be_json
+    end
+
+    context 'with a json type' do
+      let(:type) { 'KEYVALUEJSON' }
+
+      it 'returns true if the resource is in JSON format' do
+        expect(resource).to be_json
+      end
     end
   end
 

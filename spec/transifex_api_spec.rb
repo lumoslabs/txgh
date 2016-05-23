@@ -244,6 +244,19 @@ describe TransifexApi do
         TransifexNotFoundError
       )
     end
+
+    context 'with a JSON resource' do
+      let(:type) { 'KEYVALUEJSON' }
+
+      it 'escapes newlines and carriage returns in JSON responses (potential Transifex bug)' do
+        allow(connection).to receive(:get).and_return(response)
+        allow(response).to receive(:status).and_return(200)
+        allow(response).to receive(:body).and_return(%q({"content": "[\"foo\nbar\"]"}))
+        content = api.download(resource, language)
+        expect { JSON.parse(content) }.to_not raise_error
+        expect(content).to eq(%q(["foo\nbar"]))
+      end
+    end
   end
 
   describe '#get_resource' do
