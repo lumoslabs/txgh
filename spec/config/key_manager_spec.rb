@@ -32,7 +32,7 @@ describe KeyManager do
       )
 
       expect { KeyManager.config_from_project(project_name) }.to(
-        raise_error(InvalidProviderError)
+        raise_error(Txgh::InvalidProviderError)
       )
     end
   end
