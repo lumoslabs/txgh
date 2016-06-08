@@ -16,6 +16,7 @@ module Txgh
             resp.write_to(out)
           rescue => e
             Txgh.events.publish_error(e)
+            raise e
           end
         end
       else
