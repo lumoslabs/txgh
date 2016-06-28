@@ -40,13 +40,12 @@ module Txgh
         current_contents = Base64.decode64(file[:content])
         current_sha = file[:sha]
 
-        new_encoded_contents = Base64.encode64(new_contents)
         new_sha = Utils.git_hash_blob(new_contents)
         options = { branch: branch }
 
         if current_sha != new_sha
           client.update_contents(
-            repo, path, message, current_sha, new_encoded_contents, options
+            repo, path, message, current_sha, new_contents, options
           )
         end
       end
