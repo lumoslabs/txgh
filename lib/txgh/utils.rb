@@ -1,3 +1,5 @@
+require 'digest'
+
 module Txgh
   module Utils
     def slugify(text)
