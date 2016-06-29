@@ -51,10 +51,7 @@ describe GithubApi do
 
       expect(client).to(
         receive(:update_contents)
-          .with(
-            repo, path, 'message', old_sha, Base64.encode64(new_contents),
-            { branch: branch }
-          )
+          .with(repo, path, 'message', old_sha, new_contents, { branch: branch })
       )
 
       api.update_contents(repo, branch, { path => new_contents }, 'message')
