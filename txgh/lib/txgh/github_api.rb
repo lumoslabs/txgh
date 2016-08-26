@@ -34,17 +34,21 @@ module Txgh
       client.create_ref(repo, branch, sha) rescue false
     end
 
-    def update_contents(repo, branch, content_map, message)
-      content_map.each do |path, new_contents|
+    def update_contents(branch, content_list, message)
+      content_list.each do |file_params|
+        path = file_params.fetch(:path)
+        new_contents = file_params.fetch(:contents)
         branch = Utils.relative_branch(branch)
 
-        file = begin
-          client.contents(repo, { path: path, ref: branch })
-        rescue Octokit::NotFound
-          nil
+        file_sha = file_params.fetch(:sha) do
+          begin
+            client.contents(repo, { path: path, ref: branch })[:sha]
+          rescue Octokit::NotFound
+            nil
+          end
         end
 
-        current_sha = file ? file[:sha] : '0' * 40
+        current_sha = file_sha || '0' * 40
         new_sha = Utils.git_hash_blob(new_contents)
         options = { branch: branch }
 
@@ -56,32 +60,6 @@ module Txgh
       end
     end
 
-    def commit(repo, branch, content_map, message, allow_empty = false)
-      parent = client.ref(repo, branch)
-      base_commit = get_commit(repo, parent[:object][:sha])
-
-      tree_data = content_map.map do |path, content|
-        blob = client.create_blob(repo, content)
-        { path: path, mode: '100644', type: 'blob', sha: blob }
-      end
-
-      tree_options = { base_tree: base_commit[:commit][:tree][:sha] }
-
-      tree = client.create_tree(repo, tree_data, tree_options)
-      commit = client.create_commit(
-        repo, message, tree[:sha], parent[:object][:sha]
-      )
-
-      # don't update the ref if the commit introduced no new changes
-      unless allow_empty
-        diff = client.compare(repo, parent[:object][:sha], commit[:sha])
-        return if diff[:files].empty?
-      end
-
-      # false means don't force push
-      client.update_ref(repo, branch, commit[:sha], false)
-    end
-
     def get_commit(sha)
       client.commit(repo, sha)
     end
@@ -90,10 +68,14 @@ module Txgh
       client.ref(repo, ref)
     end
 
-      contents = client.contents(repo, { path: path, ref: branch })
-      return contents[:content] if contents[:encoding] == 'utf-8'
-      return Base64.decode64(contents[:content])
     def download(path, branch)
+      file = client.contents(repo, { path: path, ref: branch }).to_h
+
+      if file.delete(:encoding) == 'base64'
+        file[:content] = Base64.decode64(file[:content])
+      end
+
+      file
     end
 
     def create_status(sha, state, options = {})
