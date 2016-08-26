@@ -4,32 +4,33 @@ require 'octokit'
 module Txgh
   class GithubApi
     class << self
-      def create_from_credentials(login, access_token)
+      def create_from_credentials(login, access_token, repo)
         create_from_client(
-          Octokit::Client.new(login: login, access_token: access_token)
+          Octokit::Client.new(login: login, access_token: access_token), repo
         )
       end
 
-      def create_from_client(client)
-        new(client)
+      def create_from_client(client, repo)
+        new(client, repo)
       end
     end
 
-    attr_reader :client
+    attr_reader :client, :repo
 
-    def initialize(client)
+    def initialize(client, repo)
       @client = client
+      @repo = repo
     end
 
-    def tree(repo, sha)
+    def tree(sha)
       client.tree(repo, sha, recursive: 1)
     end
 
-    def blob(repo, sha)
+    def blob(sha)
       client.blob(repo, sha)
     end
 
-    def create_ref(repo, branch, sha)
+    def create_ref(branch, sha)
       client.create_ref(repo, branch, sha) rescue false
     end
 
@@ -81,21 +82,21 @@ module Txgh
       client.update_ref(repo, branch, commit[:sha], false)
     end
 
-    def get_commit(repo, sha)
+    def get_commit(sha)
       client.commit(repo, sha)
     end
 
-    def get_ref(repo, ref)
+    def get_ref(ref)
       client.ref(repo, ref)
     end
 
-    def download(repo, path, branch)
       contents = client.contents(repo, { path: path, ref: branch })
       return contents[:content] if contents[:encoding] == 'utf-8'
       return Base64.decode64(contents[:content])
+    def download(path, branch)
     end
 
-    def create_status(repo, sha, state, options = {})
+    def create_status(sha, state, options = {})
       client.create_status(repo, sha, state, options)
     end
 
