@@ -39,7 +39,7 @@ describe TxManager do
       it 'loads tx config from a git repository' do
         expect(repo.api).to(
           receive(:download)
-            .with(repo.name, './tx.config', 'my_branch')
+            .with('./tx.config', 'my_branch')
             .and_return("[main]\nlang_map = ko:ko_KR")
         )
 
