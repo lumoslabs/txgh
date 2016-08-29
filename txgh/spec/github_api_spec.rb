@@ -111,7 +111,23 @@ describe GithubApi do
           )
       )
 
-      expect(api.download(path, branch)).to eq('content')
+      expect(api.download(path, branch)).to eq({ content: 'content' })
+    end
+
+    it 'encodes the string using the encoding specified in the response' do
+      content = 'ありがと'.encode('UTF-16')
+
+      expect(client).to(
+        receive(:contents)
+          .with(repo, path: path, ref: branch)
+          .and_return(
+            content: content, encoding: 'utf-16'
+          )
+      )
+
+      result = api.download(path, branch)
+      expect(result[:content].encoding).to eq(Encoding::UTF_16)
+      expect(result[:content]).to eq(content)
     end
 
     it 'automatically decodes base64-encoded content' do
@@ -123,7 +139,7 @@ describe GithubApi do
           )
       )
 
-      expect(api.download(path, branch)).to eq('content')
+      expect(api.download(path, branch)).to eq({ content: 'content' })
     end
   end
 end
