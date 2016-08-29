@@ -65,9 +65,13 @@ module Txgh
     end
 
     def download(path, branch)
-      contents = client.contents(repo, { path: path, ref: branch })
-      return contents[:content] if contents[:encoding] == 'utf-8'
-      return Base64.decode64(contents[:content])
+      file = client.contents(repo, { path: path, ref: branch }).to_h
+
+      if file.delete(:encoding) == 'base64'
+        file[:content] = Base64.decode64(file[:content])
+      end
+
+      file
     end
 
     def create_status(sha, state, options = {})
