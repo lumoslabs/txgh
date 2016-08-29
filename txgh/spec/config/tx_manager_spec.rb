@@ -40,7 +40,7 @@ describe TxManager do
         expect(repo.api).to(
           receive(:download)
             .with('./tx.config', 'my_branch')
-            .and_return("[main]\nlang_map = ko:ko_KR")
+            .and_return(content: "[main]\nlang_map = ko:ko_KR")
         )
 
         config = TxManager.tx_config(project, repo, 'my_branch')

@@ -12,7 +12,7 @@ module Txgh
       @logger = logger || Logger.new(STDOUT)
     end
 
-    def update_resource(tx_resource, branch, categories = {})
+    def update_resource(tx_resource, commit_sha, categories = {})
       # don't process the resource unless the project slugs are the same
       return unless tx_resource.project_slug == project.name
 
