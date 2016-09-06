@@ -21,19 +21,19 @@ module TxghServer
           private
 
           def repo_name(payload)
-            payload['repository']['full_name']
+            payload.fetch('repository').fetch('full_name')
           end
 
           def ref(payload)
-            payload['ref']
+            payload.fetch('ref')
           end
 
           def before(payload)
-            payload['before']
+            payload.fetch('before')
           end
 
           def after(payload)
-            payload['after']
+            payload.fetch('after')
           end
 
           def added_files(payload)
@@ -45,11 +45,11 @@ module TxghServer
           end
 
           def author(payload)
-            payload['head_commit']['committer']['name']
+            payload.fetch('head_commit').fetch('committer').fetch('name')
           end
 
           def extract_files(payload, state)
-            Set.new(payload['commits'].flat_map { |c| c[state] })
+            Set.new(payload.fetch('commits').flat_map { |c| c[state] })
           end
         end
 

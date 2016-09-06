@@ -4,6 +4,8 @@ module TxghServer
   module Webhooks
     module Github
       class PushHandler
+        include ResponseHelpers
+
         attr_reader :project, :repo, :logger, :attributes
 
         def initialize(project, repo, logger, attributes)
@@ -25,7 +27,7 @@ module TxghServer
             categories = { 'author' => attributes.author }
 
             added_and_modified_resources.each do |resource|
-              updater.update_resource(resource, branch, categories)
+              updater.update_resource(resource, categories)
             end
           end
 

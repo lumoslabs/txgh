@@ -16,15 +16,15 @@ module TxghServer
           end
 
           def repo_name(payload)
-            payload['repository']['full_name']
+            payload.fetch('repository').fetch('full_name')
           end
 
           def ref(payload)
-            payload['ref']
+            payload.fetch('ref')
           end
 
           def ref_type(payload)
-            payload['ref_type']
+            payload.fetch('ref_type')
           end
         end
 

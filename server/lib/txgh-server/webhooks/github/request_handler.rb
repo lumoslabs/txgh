@@ -65,15 +65,19 @@ module TxghServer
         end
 
         def payload
-          @payload ||= if request.params[:payload]
-            JSON.parse(request.params[:payload])
-          else
-            JSON.parse(request.body.read)
+          @payload ||= begin
+            if request.params[:payload]
+              JSON.parse(request.params[:payload])
+            else
+              JSON.parse(request.body.read)
+            end
+          rescue JSON::ParserError
+            {}
           end
         end
 
         def github_repo_name
-          payload['repository']['full_name']
+          payload.fetch('repository', {})['full_name']
         end
 
         def config
