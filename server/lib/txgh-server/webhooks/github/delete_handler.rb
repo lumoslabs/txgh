@@ -2,6 +2,8 @@ module TxghServer
   module Webhooks
     module Github
       class DeleteHandler
+        include ResponseHelpers
+
         attr_reader :project, :repo, :logger, :attributes
 
         def initialize(project, repo, logger, attributes)
