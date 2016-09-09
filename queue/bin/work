@@ -1,6 +1,0 @@
-#! /usr/bin/env ruby
-
-require 'txgh-queue'
-
-worker = TxghQueue::Worker.new
-worker.work

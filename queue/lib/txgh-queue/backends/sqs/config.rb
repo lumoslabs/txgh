@@ -1,0 +1,19 @@
+module TxghQueue
+  module Backends
+    module Sqs
+      class Config
+        class << self
+          def queues
+            @queues ||= TxghQueue::Config.options[:queues].map do |queue_options|
+              Queue.new(queue_options)
+            end
+          end
+
+          def get_queue(queue_name)
+            queues.find { |q| q.name == queue_name }
+          end
+        end
+      end
+    end
+  end
+end

@@ -4,7 +4,11 @@ module TxghQueue
   class Config
     class << self
       def backend
-        raw_config[:backend]
+        TxghQueue::Backends.get(raw_config[:backend])
+      end
+
+      def options
+        raw_config[:options]
       end
 
       private
