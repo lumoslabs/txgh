@@ -49,12 +49,12 @@ module TxghServer
           end
 
           def extract_files(payload, state)
-            Set.new(payload.fetch('commits').flat_map { |c| c[state] })
+            payload.fetch('commits').flat_map { |c| c[state] }.uniq
           end
         end
 
         def files
-          @files ||= added_files.merge(modified_files)
+          @files ||= added_files + modified_files
         end
 
         attr_reader *ATTRIBUTES
