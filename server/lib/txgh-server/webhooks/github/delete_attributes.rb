@@ -11,6 +11,7 @@ module TxghServer
             new(
               ATTRIBUTES.each_with_object({}) do |attr, ret|
                 ret[attr] = public_send(attr, payload)
+              end
             )
           end
 
