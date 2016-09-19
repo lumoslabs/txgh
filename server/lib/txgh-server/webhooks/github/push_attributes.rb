@@ -13,12 +13,10 @@ module TxghServer
           def from_webhook_payload(payload)
             new(
               ATTRIBUTES.each_with_object({}) do |attr, ret|
-                ret[attr] = send(attr, payload)
+                ret[attr] = public_send(attr, payload)
               end
             )
           end
-
-          private
 
           def repo_name(payload)
             payload.fetch('repository').fetch('full_name')
@@ -69,7 +67,7 @@ module TxghServer
 
         def to_h
           ATTRIBUTES.each_with_object({}) do |attr, ret|
-            ret[attr] = instance_variable_get("@#{attr}")
+            ret[attr] = public_send(attr)
           end
         end
 
