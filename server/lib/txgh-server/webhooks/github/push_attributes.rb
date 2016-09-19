@@ -1,5 +1,3 @@
-require 'set'
-
 module TxghServer
   module Webhooks
     module Github
@@ -13,12 +11,10 @@ module TxghServer
           def from_webhook_payload(payload)
             new(
               ATTRIBUTES.each_with_object({}) do |attr, ret|
-                ret[attr] = send(attr, payload)
+                ret[attr] = public_send(attr, payload)
               end
             )
           end
-
-          private
 
           def event(payload)
             'push'
@@ -53,7 +49,7 @@ module TxghServer
           end
 
           def extract_files(payload, state)
-            Set.new(payload.fetch('commits').flat_map { |c| c[state] }).to_a
+            payload.fetch('commits').flat_map { |c| c[state] }.uniq
           end
         end
 
@@ -73,7 +69,7 @@ module TxghServer
 
         def to_h
           ATTRIBUTES.each_with_object({}) do |attr, ret|
-            ret[attr] = instance_variable_get("@#{attr}")
+            ret[attr] = public_send(attr)
           end
         end
 
