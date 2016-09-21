@@ -12,13 +12,13 @@ module Txgh
   end
 
   class TransifexNotFoundError < TransifexApiError
-    def initialize(message)
+    def initialize(message = 'Not found')
       super(message, 404)
     end
   end
 
   class TransifexUnauthorizedError < TransifexApiError
-    def initialize(message)
+    def initialize(message = 'Unauthorized')
       super(message, 401)
     end
   end
