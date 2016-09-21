@@ -42,7 +42,7 @@ module Txgh
 
         file_sha = file_params.fetch(:sha) do
           begin
-            client.contents(repo, { path: path, ref: branch })[:sha]
+            client.contents(repo_name, { path: path, ref: branch })[:sha]
           rescue Octokit::NotFound
             nil
           end
