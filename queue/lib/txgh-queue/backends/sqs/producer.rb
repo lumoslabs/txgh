@@ -12,7 +12,13 @@ module TxghQueue
         end
 
         def enqueue(payload, options = {})
-          queue.send_message(payload.to_json, options)
+          payload_json = payload.to_json
+          new_message = queue.send_message(payload.to_json, options)
+
+          logger.info(
+            "Enqueued new message with id #{new_message.message_id} and params "\
+              "#{payload_json}"
+          )
         end
       end
     end
