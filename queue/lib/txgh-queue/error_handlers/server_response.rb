@@ -1,17 +1,19 @@
+require 'txgh-server'
+
 module TxghQueue
-  class ErrorBehavior
+  module ErrorHandlers
     class ServerResponse
       class << self
         def can_handle?(error_or_response)
           error_or_response.is_a?(TxghServer::Response)
         end
 
-        def handle(response)
+        def status_for(response)
           case response.status.to_i / 100
             when 2
-              Response.ok
+              Status.ok
             else
-              Response.fail
+              Status.fail
           end
         end
       end

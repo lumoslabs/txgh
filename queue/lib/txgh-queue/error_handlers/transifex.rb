@@ -1,12 +1,12 @@
 require 'txgh'
 
 module TxghQueue
-  class ErrorBehavior
+  module ErrorHandlers
     class Transifex
       ERROR_CLASSES = {
-        Txgh::TransifexApiError          => Response.retry_with_delay
-        Txgh::TransifexNotFoundError     => Response.fail
-        Txgh::TransifexUnauthorizedError => Response.fail
+        Txgh::TransifexApiError          => Status.retry_with_delay,
+        Txgh::TransifexNotFoundError     => Status.fail,
+        Txgh::TransifexUnauthorizedError => Status.fail
       }
 
       class << self
@@ -14,7 +14,7 @@ module TxghQueue
           ERROR_CLASSES.any? { |klass, _| error_or_response.class == klass }
         end
 
-        def handle(error)
+        def status_for(error)
           ERROR_CLASSES[error.class]
         end
       end

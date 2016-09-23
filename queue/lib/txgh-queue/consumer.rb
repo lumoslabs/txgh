@@ -14,7 +14,7 @@ module TxghQueue
     end
 
     def process(payload)
-      ErrorBehavior.wrap do
+      Supervisor.supervise do
         config = config_from(payload)
         project = config.transifex_project
         repo = config.github_repo
