@@ -4,13 +4,11 @@ module TxghQueue
   module Backends
     module Sqs
       class Queue
-        attr_reader :name, :region, :process
-        alias_method :process?, :process
+        attr_reader :name, :region
 
         def initialize(options = {})
           @name = options.fetch(:name)
           @region = options.fetch(:region)
-          @process = options.fetch(:process, true)
         end
 
         def client

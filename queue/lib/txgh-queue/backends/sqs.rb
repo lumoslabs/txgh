@@ -5,7 +5,6 @@ module TxghQueue
     module Sqs
       autoload :Config,        'txgh-queue/backends/sqs/config'
       autoload :Consumer,      'txgh-queue/backends/sqs/consumer'
-      autoload :ErrorBehavior, 'txgh-queue/backends/sqs/error_behavior'
       autoload :Producer,      'txgh-queue/backends/sqs/producer'
       autoload :Queue,         'txgh-queue/backends/sqs/queue'
       autoload :RetryLogic,    'txgh-queue/backends/sqs/retry_logic'

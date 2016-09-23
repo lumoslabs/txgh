@@ -30,8 +30,6 @@ module TxghQueue
       end
     end
 
-    private
-
     def config_from(payload)
       Txgh::Config::KeyManager.config_from_repo(payload.fetch('repo_name'))
     end

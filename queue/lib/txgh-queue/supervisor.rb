@@ -27,7 +27,6 @@ module TxghQueue
     def execute
       response = block.call
     rescue StandardError => e
-      Txgh.events.publish_error(e, raise_if_no_subscribers: false)
       status = status_for_error(e)
       Result.new(status, e)
     else
