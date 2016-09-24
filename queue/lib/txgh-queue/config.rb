@@ -11,6 +11,10 @@ module TxghQueue
         raw_config[:options]
       end
 
+      def reset!
+        @raw_config = nil
+      end
+
       private
 
       def raw_config

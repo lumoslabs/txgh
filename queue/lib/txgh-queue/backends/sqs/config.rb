@@ -12,6 +12,10 @@ module TxghQueue
           def get_queue(queue_name)
             queues.find { |q| q.name == queue_name }
           end
+
+          def reset!
+            @queues = nil
+          end
         end
       end
     end

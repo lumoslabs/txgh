@@ -29,6 +29,10 @@ RSpec.configure do |config|
     if example.metadata[:auto_configure]
       env_vars = { 'TXGH_QUEUE_CONFIG' => "raw://#{YAML.dump(queue_config)}" }
       with_env(env_vars) { example.run }
+
+      # reset global config
+      TxghQueue::Config.reset!
+      TxghQueue::Backends::Sqs::Config.reset!
     else
       example.run
     end
