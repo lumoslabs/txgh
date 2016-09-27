@@ -9,6 +9,12 @@ module TxghQueue
             end
           end
 
+          def failure_queue
+            @failure_queue ||= Queue.new(
+              TxghQueue::Config.options[:failure_queue]
+            )
+          end
+
           def get_queue(queue_name)
             queues.find { |q| q.name == queue_name }
           end

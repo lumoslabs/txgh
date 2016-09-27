@@ -2,6 +2,7 @@ require 'pry-byebug'
 require 'rake'
 require 'rspec'
 require 'txgh-queue'
+require 'txgh-server'
 
 require 'spec_helpers/env_helpers'
 require 'spec_helpers/nil_logger'
@@ -11,12 +12,30 @@ RSpec.configure do |config|
   module GlobalLets
     extend RSpec::SharedContext
 
-    # default config, override in specs if you wanna change stuff
+    # default config, override in specs if you wanna customize
     let(:queue_config) do
       {
         backend: 'test',
         options: {
           queues: %w(test-queue)
+        }
+      }
+    end
+
+    # default sqs config; override queue_config with this when working with the
+    # sqs backend, i.e. let(:queue_config) { sqs_queue_config }
+    let(:sqs_queue_config) do
+      {
+        backend: 'sqs',
+        options: {
+          queues: [
+            { name: 'test-queue', region: 'us-east-1' },
+            { name: 'test-queue-2', region: 'us-west-1' }
+          ],
+
+          failure_queue: {
+            name: 'test-failure-queue', region: 'us-east-1'
+          }
         }
       }
     end

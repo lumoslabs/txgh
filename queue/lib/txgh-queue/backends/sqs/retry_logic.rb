@@ -1,3 +1,5 @@
+require 'json'
+
 module TxghQueue
   module Backends
     module Sqs
@@ -8,33 +10,26 @@ module TxghQueue
         # SQS max is 15 minutes, or 900 seconds
         DELAY_INTERVALS = [16, 32, 64, 128, 256, 512, 900]
 
-        class << self
-          def ingest(message, current_try_response)
-            yield new(message, current_try_response)
-          end
+        attr_reader :message_attributes, :current_status
+
+        def initialize(message_attributes, current_status)
+          @message_attributes = message_attributes.dup
+          @current_status = current_status
         end
 
-        attr_reader :message, :current_try_response
-
-        def initialize(message, current_try_response)
-          @message = message
-          @current_try_response = current_try_response
+        def retry?
+          retry_with_delay? || retry_without_delay?
         end
-
-        def on_retry
-          yield(sqs_retry_params, next_delay_seconds) if retry?
-        end
-
-        def on_retries_exceeded
-          yield if retries_exceeded?
-        end
-
-        private
 
         def retries_exceeded?
           max_overall_retries_exceeded? ||
             max_sequential_retries_exceeded? ||
             max_sequential_delays_exceeded?
+        end
+
+        def next_delay_seconds
+          return 0 unless retry_with_delay?
+          DELAY_INTERVALS[current_sequence.size - 1]
         end
 
         def sqs_retry_params
@@ -45,40 +40,26 @@ module TxghQueue
           end
         end
 
-        def next_delay_seconds
-          return 0 unless retry_with_delay?
-          DELAY_INTERVALS[current_sequence.size]
-        end
-
-        def retry?
-          retry_with_delay? || retry_without_delay?
-        end
+        private
 
         def retry_with_delay?
           return false if max_overall_retries_exceeded?
-          return false unless current_try_response.retry_with_delay?
+          return false unless current_status.retry_with_delay?
           !max_sequential_delays_exceeded?
         end
 
         def retry_without_delay?
           return false if max_overall_retries_exceeded?
-          return false unless current_try_response.retry_without_delay?
+          return false unless current_status.retry_without_delay?
           !max_sequential_retries_exceeded?
         end
 
         def sqs_params_without_delay
-          {
-            message_attributes: {
-              retry_sequence: {
-                string_value: (retry_sequence + [current_try_response.to_s]).join(' '),
-                data_type: 'String'
-              }
-            }
-          }
+          { message_attributes: message_attributes.to_h }
         end
 
         def sqs_params_with_delay
-          sqs_params_without_delay.merge(delay_seconds: 5) # next_delay_seconds)
+          sqs_params_without_delay.merge(delay_seconds: next_delay_seconds)
         end
 
         def max_overall_retries_exceeded?
@@ -94,25 +75,24 @@ module TxghQueue
         end
 
         def retry_sequence_will_continue?
-          current_try_response.retry_type == last_retry_type &&
-            current_try_response.retry_without_delay?
+          current_status.status == last_status &&
+            current_status.retry_without_delay?
         end
 
         def delay_sequence_will_continue?
-          current_try_response.retry_type == last_retry_type &&
-            current_try_response.retry_with_delay?
+          current_status.status == last_status &&
+            current_status.retry_with_delay?
         end
 
-        def last_retry_type
-          if rt = current_sequence.last
-            rt.to_sym
-          end
+        def last_status
+          rt = current_sequence.last
+          rt.to_sym if rt
         end
 
         def current_sequence
           if sequence = partitioned_retry_sequence.last
             if last_elem = sequence.last
-              if current_try_response.retry_type.to_s == last_elem
+              if current_status.status.to_s == last_elem
                 return sequence
               end
             end
@@ -122,25 +102,11 @@ module TxghQueue
         end
 
         def partitioned_retry_sequence
-          @partitioned_retry_sequence ||= begin
-            retry_sequence.each_with_object([]) do |elem, ret|
-              if ret.last && ret.last.last == elem
-                ret.last << elem
-              else
-                ret << [elem]
-              end
-            end
-          end
+          @partitioned_retry_sequence ||= retry_sequence.partition
         end
 
         def retry_sequence
-          @retry_sequence ||= begin
-            if attribute = message.message_attributes['retry_sequence']
-              attribute.string_value.split(' ')
-            else
-              []
-            end
-          end
+          message_attributes.retry_sequence
         end
       end
     end

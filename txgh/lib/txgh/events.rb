@@ -31,7 +31,7 @@ module Txgh
         []
       end
 
-      callbacks.each do |callback|
+      callbacks.map do |callback|
         callback.call(e, options.fetch(:params, {}))
       end
     end

@@ -3,17 +3,7 @@ require 'spec_helper'
 include TxghQueue::Backends
 
 describe Sqs, auto_configure: true do
-  let(:queue_config) do
-    {
-      backend: 'sqs',
-      options: {
-        queues: [
-          { name: 'test-queue', region: 'us-east-1' },
-          { name: 'test-queue-2', region: 'us-west-1' }
-        ]
-      }
-    }
-  end
+  let(:queue_config) { sqs_queue_config }
 
   describe '.producer_for' do
     it 'looks up the queue and returns a producer object' do

@@ -3,18 +3,7 @@ require 'spec_helper'
 include TxghQueue::Backends
 
 describe Sqs::Producer, auto_configure: true do
-  let(:queue_config) do
-    {
-      backend: 'sqs',
-      options: {
-        queues: [
-          { name: 'test-queue', region: 'us-east-1' },
-          { name: 'test-queue-2', region: 'us-west-1' }
-        ]
-      }
-    }
-  end
-
+  let(:queue_config) { sqs_queue_config }
   let(:logger) { NilLogger.new }
   let(:queue) { TxghQueue::Backends::Sqs::Config.get_queue('test-queue') }
   let(:producer) { described_class.new(queue, logger) }
