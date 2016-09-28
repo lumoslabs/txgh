@@ -1,4 +1,5 @@
 require 'json'
+require 'txgh'
 
 module TxghQueue
   module Backends
@@ -16,7 +17,13 @@ module TxghQueue
           end
 
           def from_h(hash)
-            new(hash.fetch(:retry_sequence) { hash.fetch('retry_sequence', nil) })
+            new(
+              JSON.parse(
+                Txgh::Utils.deep_symbolize_keys(hash)
+                  .fetch(:retry_sequence, {})
+                  .fetch(:string_value, nil)
+              )
+            )
           end
         end
 
@@ -25,7 +32,7 @@ module TxghQueue
         def_delegators :sequence, :[], :<<, :first, :last, :size, :length
 
         def initialize(sequence)
-          @sequence = sequence
+          @sequence = Txgh::Utils.deep_symbolize_keys(sequence)
         end
 
         def add(obj)
@@ -37,6 +44,7 @@ module TxghQueue
         end
 
         def dup
+          # use json serialization to deep copy the sequence
           self.class.new(JSON.parse(sequence.to_json))
         end
 
@@ -47,10 +55,10 @@ module TxghQueue
 
         def partition
           sequence.each_with_object([]) do |elem, ret|
-            if ret.last && ret.last.last == elem['status']
-              ret.last << elem['status']
-            elsif elem['status']
-              ret << [elem['status']]
+            if ret.last && ret.last.last == elem[:status]
+              ret.last << elem[:status]
+            elsif elem[:status]
+              ret << [elem[:status]]
             end
           end
         end

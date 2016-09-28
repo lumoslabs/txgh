@@ -11,9 +11,11 @@ describe Sqs::RetryLogic do
     let(:message) { SqsTestMessage.new('abc123', '{}', message_attributes.to_h) }
     let(:message_attributes) do
       Sqs::MessageAttributes.from_h(
-        retry_sequence: described_class::OVERALL_MAX_RETRIES.times.map do
-          { status: 'retry_without_delay' }
-        end
+        retry_sequence: {
+          string_value: described_class::OVERALL_MAX_RETRIES.times.map do
+            { status: 'retry_without_delay' }
+          end.to_json
+        }
       )
     end
 
