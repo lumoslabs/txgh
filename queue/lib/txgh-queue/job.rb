@@ -14,17 +14,6 @@ module TxghQueue
 
     def process(payload)
       Supervisor.supervise do
-        # if $counter == 0
-        #   $counter += 1
-        #   raise Octokit::TooManyRequests
-        # elsif $counter == 1
-        #   $counter += 1
-        #   raise Txgh::TransifexApiError.new('fooooo', 500)
-        # elsif $counter == 2
-        #   $counter += 1
-        #   TxghServer::Response.new(401, 'Unauthorized')
-        # end
-
         config = config_from(payload)
         project = config.transifex_project
         repo = config.github_repo
