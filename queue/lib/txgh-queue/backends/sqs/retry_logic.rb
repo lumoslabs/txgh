@@ -29,7 +29,7 @@ module TxghQueue
 
         def next_delay_seconds
           return 0 unless retry_with_delay?
-          DELAY_INTERVALS[current_sequence.size - 1]
+          DELAY_INTERVALS[[current_sequence.size - 1, 0].max]
         end
 
         def sqs_retry_params

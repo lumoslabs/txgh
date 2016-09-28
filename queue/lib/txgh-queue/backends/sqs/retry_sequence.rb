@@ -49,7 +49,6 @@ module TxghQueue
         end
 
         def current
-          sequence << {} if sequence.size == 0
           sequence.last
         end
 
