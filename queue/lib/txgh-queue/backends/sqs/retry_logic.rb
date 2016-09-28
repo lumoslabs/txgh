@@ -3,6 +3,8 @@ require 'json'
 module TxghQueue
   module Backends
     module Sqs
+      class RetriesExceededError < StandardError; end
+
       class RetryLogic
         SEQUENTIAL_MAX_RETRIES = 5
         OVERALL_MAX_RETRIES = 15
@@ -28,6 +30,7 @@ module TxghQueue
         end
 
         def next_delay_seconds
+          raise RetriesExceededError unless retry?
           return 0 unless retry_with_delay?
           DELAY_INTERVALS[[current_sequence.size - 1, 0].max]
         end
@@ -37,6 +40,8 @@ module TxghQueue
             sqs_params_without_delay
           elsif retry_with_delay?
             sqs_params_with_delay
+          else
+            raise RetriesExceededError
           end
         end
 
