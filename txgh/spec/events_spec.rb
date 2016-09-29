@@ -51,5 +51,24 @@ describe Events do
       expect(errors.size).to eq(1)
       expect(errors.first.message).to eq('foo')
     end
+
+    it 'includes additional params' do
+      errors = []
+      events.subscribe('errors') { |e, params| errors << { error: e, params: params } }
+      events.publish_error(begin; raise 'foo'; rescue => e; e; end, params: { foo: 'bar' })
+      expect(errors.size).to eq(1)
+
+      error = errors.first
+      expect(error[:error].message).to eq('foo')
+      expect(error[:params]).to eq(foo: 'bar')
+    end
+
+    it 'raises errors if no error subscribers are configured' do
+      expect { events.publish_error(StandardError.new) }.to raise_error(StandardError)
+    end
+
+    it 'does not raise errors if specifically asked not to when no error subscribers are configured' do
+      expect { events.publish_error(StandardError.new, raise_if_no_subscribers: false) }.to_not raise_error
+    end
   end
 end
