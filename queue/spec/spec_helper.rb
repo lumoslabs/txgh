@@ -29,8 +29,8 @@ RSpec.configure do |config|
         backend: 'sqs',
         options: {
           queues: [
-            { name: 'test-queue', region: 'us-east-1' },
-            { name: 'test-queue-2', region: 'us-west-1' }
+            { name: 'test-queue', region: 'us-east-1', events: %w(a b c) },
+            { name: 'test-queue-2', region: 'us-west-1', events: %w(c d e) }
           ],
 
           failure_queue: {

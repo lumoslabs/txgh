@@ -1,12 +1,12 @@
 module TxghQueue
   class TestBackend
     class << self
-      def producer_for(queue_name, logger = Txgh::TxLogger.logger)
-        TestProducer.new(queue_name, logger)
+      def producer_for(event, logger = Txgh::TxLogger.logger)
+        TestProducer.new(event, logger)
       end
 
-      def consumer_for(queue_names, logger = Txgh::TxLogger.logger)
-        TestConsumer.new(queue_names, logger)
+      def consumer_for(event, logger = Txgh::TxLogger.logger)
+        TestConsumer.new(event, logger)
       end
     end
   end
@@ -14,8 +14,8 @@ module TxghQueue
   class TestProducer
     attr_reader :queue_names, :logger
 
-    def initialize(queue_name, logger)
-      @queue_name = queue_name
+    def initialize(event, logger)
+      @event = event
       @logger = logger
     end
 
@@ -26,8 +26,8 @@ module TxghQueue
   class TestConsumer
     attr_reader :queue_names, :logger
 
-    def initialize(queue_names, logger)
-      @queue_names = queue_names
+    def initialize(event, logger)
+      @event = event
       @logger = logger
     end
 
