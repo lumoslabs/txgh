@@ -43,9 +43,11 @@ module TxghServer
               return respond_with_error(500, 'Queue not configured')
             end
 
+            txgh_event = 'transifex.pull'
+
             result = TxghQueue::Config.backend
-              .producer_for('transifex.pull')
-              .enqueue(payload, logger)
+              .producer_for(txgh_event)
+              .enqueue(payload.merge(txgh_event: txgh_event, logger)
 
             respond_with(200, result.to_json)
           end

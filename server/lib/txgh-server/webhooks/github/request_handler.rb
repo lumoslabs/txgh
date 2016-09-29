@@ -47,9 +47,11 @@ module TxghServer
 
             case github_event
               when 'push', 'delete'
+                txgh_event = "github.#{github_event}"
+
                 result = TxghQueue::Config.backend
-                  .producer_for("github.#{github_event}")
-                  .enqueue(payload, logger)
+                  .producer_for(txgh_event)
+                  .enqueue(payload.merge(txgh_event: txgh_event, logger)
 
                 respond_with(200, result.to_json)
               else
