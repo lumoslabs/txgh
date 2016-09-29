@@ -48,6 +48,9 @@ module Txgh
           end
         end
 
+        # If the file doesnt exist, then it isn't tracked by git and file_sha
+        # will be nil. In git land, a SHA of all zeroes means create a new file
+        # instead of updating an existing one.
         current_sha = file_sha || '0' * 40
         new_sha = Utils.git_hash_blob(new_contents)
         options = { branch: branch }
