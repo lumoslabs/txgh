@@ -43,7 +43,7 @@ module TxghServer
               return respond_with_error(500, 'Queue not configured')
             end
 
-            txgh_event = 'transifex.pull'
+            txgh_event = 'transifex.hook'
 
             result = TxghQueue::Config.backend
               .producer_for(txgh_event)
