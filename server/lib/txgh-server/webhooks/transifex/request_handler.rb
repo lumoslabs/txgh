@@ -5,11 +5,13 @@ module TxghServer
     module Transifex
       class RequestHandler
         class << self
-
           def handle_request(request, logger)
-            new(request, logger).handle(TxghServer::Webhooks::Transifex::HookHandler)
+            new(request, logger).handle_request
           end
 
+          def enqueue(request, logger)
+            new(request, logger).enqueue
+          end
         end
 
         include ResponseHelpers
@@ -21,9 +23,9 @@ module TxghServer
           @logger = logger
         end
 
-        def handle(klass)
+        def handle_request
           handle_safely do
-            handler = klass.new(
+            handler = TxghServer::Webhooks::Transifex::HookHandler.new(
               project: config.transifex_project,
               repo: config.github_repo,
               resource_slug: payload['resource'],
@@ -35,7 +37,29 @@ module TxghServer
           end
         end
 
+        def enqueue
+          handle_safely do
+            unless queue_configured?
+              return respond_with_error(500, 'Queue not configured')
+            end
+
+            result = TxghQueue::Config.backend
+              .producer_for('transifex.pull')
+              .enqueue(payload, logger)
+
+            respond_with(200, result.to_json)
+          end
+        end
+
         private
+
+        def queue_configured?
+          TxghQueue::Config.backend
+        rescue StandardError
+          false
+        else
+          true
+        end
 
         def handle_safely
           if authentic_request?
