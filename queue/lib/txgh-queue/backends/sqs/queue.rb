@@ -9,7 +9,7 @@ module TxghQueue
         def initialize(options = {})
           @name = options.fetch(:name)
           @region = options.fetch(:region)
-          @events = options.fetch(:events)
+          @events = options.fetch(:events, [])
         end
 
         def client

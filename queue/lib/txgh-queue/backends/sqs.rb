@@ -14,11 +14,11 @@ module TxghQueue
 
       class << self
         def producer_for(event, logger = Txgh::TxLogger.logger)
-          Producer.new(get_queues(queue_names), logger)
+          Producer.new(find_queues_for(event), logger)
         end
 
         def consumer_for(event, logger = Txgh::TxLogger.logger)
-          Consumer.new(get_queues(queue_names), logger)
+          Consumer.new(find_queues_for(event), logger)
         end
 
         private
