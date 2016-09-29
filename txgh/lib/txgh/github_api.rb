@@ -34,17 +34,21 @@ module Txgh
       client.create_ref(repo_name, branch, sha) rescue false
     end
 
-    def update_contents(branch, content_map, message)
-      content_map.each do |path, new_contents|
+    def update_contents(branch, content_list, message)
+      content_list.each do |file_params|
+        path = file_params.fetch(:path)
+        new_contents = file_params.fetch(:contents)
         branch = Utils.relative_branch(branch)
 
-        file = begin
-          client.contents(repo_name, { path: path, ref: branch })
-        rescue Octokit::NotFound
-          nil
+        file_sha = file_params.fetch(:sha) do
+          begin
+            client.contents(repo_name, { path: path, ref: branch })[:sha]
+          rescue Octokit::NotFound
+            nil
+          end
         end
 
-        current_sha = file ? file[:sha] : '0' * 40
+        current_sha = file_sha || '0' * 40
         new_sha = Utils.git_hash_blob(new_contents)
         options = { branch: branch }
 
@@ -81,6 +85,5 @@ module Txgh
     def create_status(sha, state, options = {})
       client.create_status(repo_name, sha, state, options)
     end
-
   end
 end
