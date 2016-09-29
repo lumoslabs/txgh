@@ -1,3 +1,17 @@
+== 6.0.2
+* Upgrade to txgh v6.0.3.
+
+== 6.0.1
+* Upgrade to txgh v6.0.2.
+
+== 6.0.0
+* Upgrade txgh to v6.0.
+* Upgrade txgh-server to v2.0.
+
+== 5.6.0
+* Refactor webhook logic, bump version of txgh-server.
+* Fix incorrectly scoped constant.
+
 == 5.5.0
 * Use github's contents API for downloading files.
 

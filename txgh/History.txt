@@ -1,3 +1,18 @@
+== 6.0.3
+* Don't pass SHA when calling ResourceUpdater#update_resource.
+
+== 6.0.2
+* Fix bug in resource updater where a file hash is sent to the abroad extractor instead of the file's contents.
+
+== 6.0.1
+* Fix ArgumentError bug in resource updater.
+
+== 6.0.0
+* Refactor GithubApi. Repo name is now passed into constructor.
+* Remove unused L10n branch behavior.
+* Use tip of branch instead of commit SHA to update a resource.
+* Use Github's content API to create and update files instead of the commit API.
+
 == 5.5.0
 * Use github's contents API for downloading files.
 

@@ -1,2 +1,9 @@
+== 2.0.0
+* Upgrade to txgh v6.0.
+
+== 1.1.0
+* Refactored webhook logic
+* Fixed incorrectly scoped constant
+
 == 1.0.0
 * Birthday!

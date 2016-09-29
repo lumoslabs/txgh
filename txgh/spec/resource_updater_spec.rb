@@ -11,7 +11,7 @@ describe ResourceUpdater do
   end
 
   let(:branch) { nil }
-  let(:ref) { nil }
+  let(:ref) { 'heads/master' }
   let(:resource) { tx_config.resource(resource_slug, ref) }
   let(:commit_sha) { '8765309' }
 
@@ -31,7 +31,7 @@ describe ResourceUpdater do
   before(:each) do
     modified_files.each do |file|
       allow(github_api).to(
-        receive(:download).with(file[:path]).and_return(file)
+        receive(:download).with(file[:path], ref).and_return(file)
       )
     end
   end
@@ -116,14 +116,18 @@ describe ResourceUpdater do
     end
 
     it 'uploads a diff instead of the whole resource' do
+      file = {
+        path: 'en.yml',
+        commit_sha: commit_sha,
+        content: YAML.load("|
+          en:
+            welcome: Hello
+            goodbye: Goodbye
+        ")
+      }
+
       expect(github_api).to(
-        receive(:download)
-          .with('en.yml', diff_point)
-          .and_return(YAML.load("|
-            en:
-              welcome: Hello
-              goodbye: Goodbye
-          "))
+        receive(:download).with('en.yml', diff_point).and_return(file)
       )
 
       diff = YAML.load(%Q(|
