@@ -21,24 +21,6 @@ RSpec.configure do |config|
         }
       }
     end
-
-    # default sqs config; override queue_config with this when working with the
-    # sqs backend, i.e. let(:queue_config) { sqs_queue_config }
-    let(:sqs_queue_config) do
-      {
-        backend: 'sqs',
-        options: {
-          queues: [
-            { name: 'test-queue', region: 'us-east-1' },
-            { name: 'test-queue-2', region: 'us-west-1' }
-          ],
-
-          failure_queue: {
-            name: 'test-failure-queue', region: 'us-east-1'
-          }
-        }
-      }
-    end
   end
 
   config.include(GlobalLets)
@@ -51,7 +33,6 @@ RSpec.configure do |config|
 
       # reset global config
       TxghQueue::Config.reset!
-      TxghQueue::Backends::Sqs::Config.reset!
     else
       example.run
     end

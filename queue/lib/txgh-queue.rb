@@ -6,6 +6,4 @@ module TxghQueue
   autoload :Status,        'txgh-queue/status'
   autoload :Supervisor,    'txgh-queue/supervisor'
   autoload :Result,        'txgh-queue/result'
-
-  Backends.register('sqs', TxghQueue::Backends::Sqs)
 end
