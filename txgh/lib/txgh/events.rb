@@ -24,10 +24,16 @@ module Txgh
       channel_hash.keys
     end
 
-    def publish_error(e)
+    def publish_error(e, options = {})
       # if nobody has subscribed to error events, raise original error
-      callbacks = channel_hash.fetch(ERROR_CHANNEL) { raise e }
-      callbacks.each { |callback| callback.call(e) }
+      callbacks = channel_hash.fetch(ERROR_CHANNEL) do
+        raise(e) if options.fetch(:raise_if_no_subscribers, true)
+        []
+      end
+
+      callbacks.map do |callback|
+        callback.call(e, options.fetch(:params, {}))
+      end
     end
   end
 end
