@@ -13,18 +13,22 @@ module TxghQueue
       autoload :RetrySequence,     'txgh-queue/backends/sqs/retry_sequence'
 
       class << self
-        def producer_for(event, logger = Txgh::TxLogger.logger)
-          Producer.new(find_queues_for(event), logger)
+        def producer_for(events, logger = Txgh::TxLogger.logger)
+          Producer.new(find_queues_for(Array(events)), logger)
         end
 
-        def consumer_for(event, logger = Txgh::TxLogger.logger)
-          Consumer.new(find_queues_for(event), logger)
+        def consumer_for(events, logger = Txgh::TxLogger.logger)
+          Consumer.new(find_queues_for(Array(events)), logger)
         end
 
         private
 
-        def find_queues_for(event)
-          Config.queues.select { |queue| queue.events.include?(event) }
+        def find_queues_for(events)
+          queues = events.flat_map do |event|
+            Config.queues.select { |queue| queue.events.include?(event) }
+          end
+
+          queues.uniq
         end
       end
     end

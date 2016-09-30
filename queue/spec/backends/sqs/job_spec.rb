@@ -80,9 +80,9 @@ describe Sqs::Job, auto_configure: true do
       it 'reports errors to the event system' do
         expect(failure_queue).to receive(:send_message)
 
-        expect(Txgh.events).to receive(:publish_error) do |e, options|
+        expect(Txgh.events).to receive(:publish_error) do |e, params|
           expect(e).to eq(error)
-          expect(options[:params]).to eq(
+          expect(params).to eq(
             payload: body, message_id: message.message_id, queue: queue.name
           )
         end
