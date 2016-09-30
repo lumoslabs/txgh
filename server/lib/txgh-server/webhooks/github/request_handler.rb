@@ -28,9 +28,9 @@ module TxghServer
           handle_safely do
             case github_event
               when 'push'
-                PushHandler.new(project, repo, logger, attributes).execute
+                PushHandler.new(project, repo, logger, attributes.to_h).execute
               when 'delete'
-                DeleteHandler.new(project, repo, logger, attributes).execute
+                DeleteHandler.new(project, repo, logger, attributes.to_h).execute
               when 'ping'
                 PingHandler.new(logger).execute
               else
@@ -50,8 +50,8 @@ module TxghServer
                 txgh_event = "github.#{github_event}"
 
                 result = TxghQueue::Config.backend
-                  .producer_for(txgh_event)
-                  .enqueue(payload.merge(txgh_event: txgh_event, logger)
+                  .producer_for(txgh_event, logger)
+                  .enqueue(attributes.to_h.merge(txgh_event: txgh_event))
 
                 respond_with(200, result.to_json)
               else

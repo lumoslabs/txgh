@@ -98,13 +98,13 @@ module TxghServer
 
     post '/transifex/enqueue' do
       respond_with(
-        Transifex::RequestHandler.enqueue(request, settings.logger)
+        Transifex::RequestHandler.enqueue_request(request, settings.logger)
       )
     end
 
     post '/github/enqueue' do
       respond_with(
-        Github::RequestHandler.enqueue(request, settings.logger)
+        Github::RequestHandler.enqueue_request(request, settings.logger)
       )
     end
   end

@@ -9,7 +9,7 @@ module TxghServer
             new(request, logger).handle_request
           end
 
-          def enqueue(request, logger)
+          def enqueue_request(request, logger)
             new(request, logger).enqueue
           end
         end
@@ -46,8 +46,8 @@ module TxghServer
             txgh_event = 'transifex.hook'
 
             result = TxghQueue::Config.backend
-              .producer_for(txgh_event)
-              .enqueue(payload.merge(txgh_event: txgh_event, logger)
+              .producer_for(txgh_event, logger)
+              .enqueue(payload.merge(txgh_event: txgh_event))
 
             respond_with(200, result.to_json)
           end
