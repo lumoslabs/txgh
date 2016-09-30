@@ -85,6 +85,7 @@ module TxghQueue
             logger.info("Deleted original #{message.message_id}")
           elsif retry_logic.retries_exceeded?
             logger.info("Message #{message.message_id} has exceeded allowed retries.")
+            do_fail(result)
           end
         end
 
