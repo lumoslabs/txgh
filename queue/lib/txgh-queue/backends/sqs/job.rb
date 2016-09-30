@@ -99,12 +99,9 @@ module TxghQueue
 
         def publish_error_for(result)
           Txgh.events.publish_error(result.error, {
-            raise_if_no_subscribers: false,
-            params: {
-              payload: payload,
-              message_id: message.message_id,
-              queue: queue.name
-            }
+            payload: payload,
+            message_id: message.message_id,
+            queue: queue.name
           })
         end
 
