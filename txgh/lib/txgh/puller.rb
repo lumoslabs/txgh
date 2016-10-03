@@ -9,17 +9,31 @@ module Txgh
     end
 
     def pull
-      tx_config.resources.each do |tx_resource|
+      existing_resources = project.api.get_resources(project.name)
+      slugs = existing_resources.map { |resource| resource['slug'] }
+
+      resources = tx_config.resources.each_with_object([]) do |tx_resource, ret|
         if repo.process_all_branches?
           tx_resource = Txgh::TxBranchResource.new(tx_resource, branch)
         end
 
+        next unless slugs.include?(tx_resource.resource_slug)
+        ret << tx_resource
+      end
+
+      pull_resources(resources, &block)
+    end
+
+    def pull_resources(tx_resources)
+      tx_resources.each do |tx_resource|
         pull_resource(tx_resource)
       end
+
+      update_github_status_for(tx_resources)
     end
 
     def pull_resource(tx_resource)
-      each_language do |language_code|
+      project.languages.each do |language_code|
         committer.commit_resource(tx_resource, branch, language_code)
       end
     end
@@ -30,20 +44,19 @@ module Txgh
 
     private
 
-    def committer
-      @committer ||= Txgh::ResourceCommitter.new(project, repo)
+    def update_github_status_for(tx_resources)
+      return unless branch
+      ref = repo.api.get_ref(branch)
+      github_status = GithubStatus.new(project, repo, tx_resources)
+      github_status.update(ref[:object][:sha])
+    rescue Octokit::UnprocessableEntity
+      # raised because we've tried to create too many statuses for the commit
+    rescue Txgh::TransifexNotFoundError
+      # raised if transifex resource can't be found
     end
 
-    def each_language
-      return to_enum(__method__) unless block_given?
-
-      languages.each do |language|
-        language_code = language['language_code']
-
-        if project.supported_language?(language_code)
-          yield language_code
-        end
-      end
+    def committer
+      @committer ||= Txgh::ResourceCommitter.new(project, repo)
     end
 
     def languages

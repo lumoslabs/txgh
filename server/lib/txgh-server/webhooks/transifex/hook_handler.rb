@@ -29,6 +29,10 @@ module TxghServer
 
         private
 
+        def puller
+          @puller ||= Puller.new(project, repo, branch)
+        end
+
         def check_error_response
           check_supported_language || check_tx_config || check_tx_resource
         end

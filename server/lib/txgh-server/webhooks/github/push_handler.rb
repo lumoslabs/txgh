@@ -23,11 +23,9 @@ module TxghServer
           if should_process?
             logger.info('found branch in github request')
 
-            updater = Txgh::ResourceUpdater.new(project, repo, logger)
-            categories = { 'author' => attributes.author }
-
-            added_and_modified_resources.each do |resource|
-              updater.update_resource(resource, categories)
+            pusher.push_resources(added_and_modified_resources) do |tx_resource|
+              # block should return categories for the passed-in resource
+              { 'author' => attributes.author }
             end
           end
 
@@ -36,9 +34,13 @@ module TxghServer
 
         private
 
+        def pusher
+          @pusher ||= Pusher.new(project, repo, branch)
+        end
+
         # finds the resources that were updated in each commit
         def added_and_modified_resources
-          attributes.files.each_with_object(Set.new) do |file, ret|
+          @amr ||= attributes.files.each_with_object(Set.new) do |file, ret|
             logger.info("processing added/modified file: #{file}")
 
             if tx_resources.include?(file)
