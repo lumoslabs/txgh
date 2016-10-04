@@ -1,3 +1,5 @@
+require 'celluloid/current'
+
 module Txgh
   class GithubStatus
     class State
@@ -96,8 +98,8 @@ module Txgh
 
     def stats
       @stats ||= tx_resources.map do |tx_resource|
-        project.api.get_stats(*tx_resource.slugs)
-      end
+        Celluloid::Future.new { project.api.get_stats(*tx_resource.slugs) }
+      end.map(&:value)
     end
 
     def tx_resources
