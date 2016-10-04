@@ -26,7 +26,7 @@ module Txgh
       Txgh.events.publish(
         'github.resource.committed', {
           project: project, repo: repo, resource: tx_resource,
-          language: language
+          language: language, branch: branch
         }
       )
     end

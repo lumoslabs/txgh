@@ -107,7 +107,7 @@ module Txgh
             tx_resource = Txgh::TxBranchResource.new(tx_resource, branch)
           end
 
-          next unless slugs.include?(tx_resource.resource_slug)
+          next unless existing_slugs.include?(tx_resource.resource_slug)
           ret << tx_resource
         end
     end

@@ -26,7 +26,8 @@ module Txgh
 
       Txgh.events.publish(
         'transifex.resource.updated', {
-          project: project, repo: repo, resource: tx_resource
+          project: project, repo: repo, resource: tx_resource,
+          branch: tx_resource.branch
         }
       )
     end
