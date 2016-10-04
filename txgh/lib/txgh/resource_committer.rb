@@ -20,7 +20,7 @@ module Txgh
       return unless translations
 
       repo.api.update_contents(
-        branch, { path: file_name, contents: translations }, message
+        branch, [{ path: file_name, contents: translations }], message
       )
 
       Txgh.events.publish(
