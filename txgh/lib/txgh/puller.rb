@@ -24,36 +24,23 @@ module Txgh
       pull_resources(resources, &block)
     end
 
-    def pull_resources(tx_resources)
+    def pull_resources(tx_resources, languages = nil)
       tx_resources.each do |tx_resource|
-        pull_resource(tx_resource)
-      end
-
-      update_github_status_for(tx_resources)
-    end
-
-    def pull_resource(tx_resource)
-      project.languages.each do |language_code|
-        committer.commit_resource(tx_resource, branch, language_code)
+        pull_resource(tx_resource, languages)
       end
     end
 
-    def pull_slug(resource_slug)
-      pull_resource(tx_config.resource(resource_slug, branch))
+    def pull_resource(tx_resource, languages = nil)
+      (languages || project.languages).each do |language|
+        committer.commit_resource(tx_resource, branch, language)
+      end
+    end
+
+    def pull_slug(resource_slug, languages = nil)
+      pull_resource(tx_config.resource(resource_slug, branch), languages)
     end
 
     private
-
-    def update_github_status_for(tx_resources)
-      return unless branch
-      ref = repo.api.get_ref(branch)
-      github_status = GithubStatus.new(project, repo, tx_resources)
-      github_status.update(ref[:object][:sha])
-    rescue Octokit::UnprocessableEntity
-      # raised because we've tried to create too many statuses for the commit
-    rescue Txgh::TransifexNotFoundError
-      # raised if transifex resource can't be found
-    end
 
     def committer
       @committer ||= Txgh::ResourceCommitter.new(project, repo)

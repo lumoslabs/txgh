@@ -29,8 +29,6 @@ module Txgh
         categories = block_given? ? yield(tx_resource) : {}
         push_resource(tx_resource, categories)
       end
-
-      update_github_status_for(tx_resources)
     end
 
     def push_resource(tx_resource, categories = {})
@@ -42,17 +40,6 @@ module Txgh
     end
 
     private
-
-    def update_github_status_for(tx_resources)
-      return unless branch
-      ref = repo.api.get_ref(branch)
-      github_status = GithubStatus.new(project, repo, tx_resources)
-      github_status.update(ref[:object][:sha])
-    rescue Octokit::UnprocessableEntity
-      # raised because we've tried to create too many statuses for the commit
-    rescue Txgh::TransifexNotFoundError
-      # raised if transifex resource can't be found
-    end
 
     def updater
       @updater ||= Txgh::ResourceUpdater.new(project, repo)

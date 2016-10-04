@@ -19,16 +19,24 @@ module Txgh
     DESCRIPTION_TEMPLATE = "%{complete}/%{total} translations complete."
     CONTEXT = 'continuous-localization/txgh'
 
-    attr_reader :project, :repo, :tx_resources
-
-    def initialize(project, repo, tx_resources)
-      @project = project
-      @repo = repo
-      @tx_resources = tx_resources
+    class << self
+      def update(project, repo, branch)
+        new(project, repo, branch).update
+      end
     end
 
-    def update(sha)
+    attr_reader :project, :repo, :branch
+
+    def initialize(project, repo, branch)
+      @project = project
+      @repo = repo
+      @branch = branch
+    end
+
+    def update
       return if tx_resources.empty?
+
+      sha = repo.api.get_ref(branch)[:object][:sha]
 
       repo.api.create_status(
         sha, state, {
@@ -90,6 +98,32 @@ module Txgh
       @stats ||= tx_resources.map do |tx_resource|
         project.api.get_stats(*tx_resource.slugs)
       end
+    end
+
+    def tx_resources
+      @tx_resources ||=
+        tx_config.resources.each_with_object([]) do |tx_resource, ret|
+          if repo.process_all_branches?
+            tx_resource = Txgh::TxBranchResource.new(tx_resource, branch)
+          end
+
+          next unless slugs.include?(tx_resource.resource_slug)
+          ret << tx_resource
+        end
+    end
+
+    def existing_slugs
+      @existing_slugs ||= existing_resources.map do |resource|
+        resource['slug']
+      end
+    end
+
+    def existing_resources
+      @existing_resources ||= project.api.get_resources(project.name)
+    end
+
+    def tx_config
+      @tx_config ||= Txgh::Config::TxManager.tx_config(project, repo, branch)
     end
   end
 end

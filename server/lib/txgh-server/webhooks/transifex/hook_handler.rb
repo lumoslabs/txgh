@@ -21,13 +21,21 @@ module TxghServer
           logger.info(resource_slug)
 
           check_error_response || begin
-            committer = Txgh::ResourceCommitter.new(project, repo, logger)
-            committer.commit_resource(tx_resource, branch, language)
+            puller.pull_resource(tx_resource, [language])
+            update_github_status
             respond_with(200, true)
           end
         end
 
         private
+
+        def update_github_status
+          GithubStatus.update(project, repo, branch)
+        rescue Octokit::UnprocessableEntity
+          # raised because we've tried to create too many statuses for the commit
+        rescue Txgh::TransifexNotFoundError
+          # raised if transifex resource can't be found
+        end
 
         def puller
           @puller ||= Puller.new(project, repo, branch)
