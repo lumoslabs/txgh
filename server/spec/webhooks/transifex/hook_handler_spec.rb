@@ -45,9 +45,13 @@ describe HookHandler do
     expect(github_api).to(
       receive(:update_contents).with(
         "heads/#{branch}",
-        { "translations/#{language}/sample.yml" => translations },
+        [{ path: "translations/#{language}/sample.yml", contents: translations }],
         "Updating #{language} translations in #{file_name}"
       )
+    )
+
+    expect(Txgh::GithubStatus).to(
+      receive(:update).with(transifex_project, github_repo, ref)
     )
 
     response = handler.execute
@@ -92,9 +96,13 @@ describe HookHandler do
       expect(github_api).to(
         receive(:update_contents).with(
           ref,
-          { "translations/#{language}/sample.yml" => translations },
+          [{ path: "translations/#{language}/sample.yml", contents: translations }],
           "Updating #{language} translations in #{file_name}"
         )
+      )
+
+      expect(Txgh::GithubStatus).to(
+        receive(:update).with(transifex_project, github_repo, ref)
       )
 
       response = handler.execute
@@ -110,9 +118,13 @@ describe HookHandler do
       expect(github_api).to(
         receive(:update_contents).with(
           "tags/my_tag",
-          { "translations/#{language}/sample.yml" => translations },
+          [{ path: "translations/#{language}/sample.yml", contents: translations }],
           "Updating #{language} translations in #{file_name}"
         )
+      )
+
+      expect(Txgh::GithubStatus).to(
+        receive(:update).with(transifex_project, github_repo, branch)
       )
 
       response = handler.execute

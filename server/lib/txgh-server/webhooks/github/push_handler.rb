@@ -1,4 +1,6 @@
 require 'set'
+require 'octokit'
+require 'txgh'
 
 module TxghServer
   module Webhooks
@@ -37,7 +39,7 @@ module TxghServer
         private
 
         def update_github_status
-          GithubStatus.update(project, repo, branch)
+          Txgh::GithubStatus.update(project, repo, branch)
         rescue Octokit::UnprocessableEntity
           # raised because we've tried to create too many statuses for the commit
         rescue Txgh::TransifexNotFoundError
@@ -45,7 +47,7 @@ module TxghServer
         end
 
         def pusher
-          @pusher ||= Pusher.new(project, repo, branch)
+          @pusher ||= Txgh::Pusher.new(project, repo, branch)
         end
 
         # finds the resources that were updated in each commit

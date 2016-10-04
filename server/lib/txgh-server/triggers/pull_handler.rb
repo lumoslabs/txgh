@@ -1,3 +1,6 @@
+require 'octokit'
+require 'txgh'
+
 module TxghServer
   module Triggers
     class PullHandler < Handler
@@ -11,7 +14,7 @@ module TxghServer
       private
 
       def update_github_status
-        GithubStatus.update(project, repo, branch)
+        Txgh::GithubStatus.update(project, repo, branch)
       rescue Octokit::UnprocessableEntity
         # raised because we've tried to create too many statuses for the commit
       rescue Txgh::TransifexNotFoundError

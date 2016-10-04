@@ -1,4 +1,6 @@
 require 'logger'
+require 'txgh'
+require 'octokit'
 
 module TxghServer
   module Webhooks
@@ -30,7 +32,7 @@ module TxghServer
         private
 
         def update_github_status
-          GithubStatus.update(project, repo, branch)
+          Txgh::GithubStatus.update(project, repo, branch)
         rescue Octokit::UnprocessableEntity
           # raised because we've tried to create too many statuses for the commit
         rescue Txgh::TransifexNotFoundError
@@ -38,7 +40,7 @@ module TxghServer
         end
 
         def puller
-          @puller ||= Puller.new(project, repo, branch)
+          @puller ||= Txgh::Puller.new(project, repo, branch)
         end
 
         def check_error_response
