@@ -1,3 +1,15 @@
+== 6.1.0
+* Upgrade to txgh v6.1.0 and txgh-server v2.1.0.
+
+== 6.0.5
+* Upgrade to txgh v6.0.6.
+
+== 6.0.4
+* Upgrade to txgh v6.0.5. 
+
+== 6.0.3
+* Upgrade to txgh v6.0.4.
+
 == 6.0.2
 * Upgrade to txgh v6.0.3.
 
