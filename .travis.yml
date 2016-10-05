@@ -20,11 +20,11 @@ sudo: false
 language: ruby
 matrix:
   include:
-    - rvm: 2.1.6
+    - rvm: 2.1.9
       <<: *txgh
-    - rvm: 2.1.6
+    - rvm: 2.1.9
       <<: *server
-    - rvm: 2.1.6
+    - rvm: 2.1.9
       <<: *queue
 
     - rvm: 2.2.5
