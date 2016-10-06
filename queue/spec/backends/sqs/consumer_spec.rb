@@ -23,4 +23,12 @@ describe Sqs::Consumer, auto_configure: true do
 
     consumer.work
   end
+
+  it 'reports errors' do
+    errors = []
+    Txgh.events.subscribe('errors') { |e| errors << e }
+    expect(queues.first).to receive(:receive_message).and_raise(StandardError, 'jelly beans')
+    expect { consumer.work }.to change { errors.size }.from(0).to(1)
+    expect(errors.first.message).to eq('jelly beans')
+  end
 end

@@ -147,6 +147,26 @@ describe Sqs::Job, auto_configure: true do
         job.complete
       end
 
+      context 'with all retries exceeded' do
+        let(:message) do
+          SqsTestMessage.new('123abc', body.to_json, {
+            'retry_sequence' => {
+              'string_value' => (Sqs::RetryLogic::OVERALL_MAX_RETRIES - 1).times.map do
+                { status: 'retry_without_delay' }
+              end.to_json
+            }
+          })
+        end
+
+        it 'deletes the message and adds it to the failure queue' do
+          response = TxghServer::Response.new(502, 'Bad gateway')
+          result = Result.new(Status.retry_with_delay, response)
+          expect(job).to receive(:process).with(body).and_return(result)
+          expect(failure_queue).to receive(:send_message).and_return(new_message)
+          job.complete
+        end
+      end
+
       it_behaves_like "it updates the message's retry sequence", Status.retry_without_delay, :queue
       it_behaves_like "it updates the message's retry sequence", Status.retry_with_delay, :queue
     end
