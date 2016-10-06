@@ -11,7 +11,7 @@ module TxghQueue
 
       class << self
         def can_handle?(error_or_response)
-          ERROR_CLASSES.any? { |klass, _| error_or_response.class == klass }
+          ERROR_CLASSES.any? { |klass, _| error_or_response.class <= klass }
         end
 
         def status_for(error)
