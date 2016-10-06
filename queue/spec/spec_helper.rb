@@ -4,9 +4,9 @@ require 'rspec'
 require 'txgh-queue'
 require 'txgh-server'
 
-require 'spec_helpers/env_helpers'
-require 'spec_helpers/nil_logger'
-require 'spec_helpers/test_backend'
+require 'helpers/env_helpers'
+require 'helpers/nil_logger'
+require 'helpers/test_backend'
 
 RSpec.configure do |config|
   module GlobalLets
