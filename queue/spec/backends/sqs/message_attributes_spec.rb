@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'spec_helpers/sqs/sqs_test_message'
+require 'helpers/sqs/sqs_test_message'
 require 'json'
 
 include TxghQueue
