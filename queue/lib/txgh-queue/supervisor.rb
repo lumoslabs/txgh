@@ -4,6 +4,10 @@ module TxghQueue
   class UnexpectedResponse < StandardError; end
 
   class Supervisor
+    # ErrorHandlers::StandardErrors should always come last as a catch-all for
+    # unexpected errors. All errors handled by this supervisor inherit from
+    # StandardError, so putting it too early in the handler list may cause an
+    # error to be mis-handled.
     ERROR_HANDLERS = [
       ErrorHandlers::ServerResponse,
       ErrorHandlers::Github,
