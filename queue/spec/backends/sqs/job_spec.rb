@@ -14,8 +14,8 @@ describe Sqs::Job, auto_configure: true do
   let(:new_message) { SqsTestMessage.new('456def', body.to_json) }
   let(:job) { described_class.new(message, queue, logger) }
 
-  shared_examples "it updates the message's retry sequence" do |status, queue_sym|
-    it 'updates the retry sequence with failure details for an exception' do
+  shared_examples "it updates the message's history sequence" do |status, queue_sym|
+    it 'updates the history sequence with failure details for an exception' do
       error = StandardError.new('foobar')
       error.set_backtrace('path/to/file.rb:10')
       result = Result.new(status, error)
@@ -24,7 +24,7 @@ describe Sqs::Job, auto_configure: true do
       # this call to send_message signifies a retry
       expect(send(queue_sym)).to receive(:send_message) do |body, attributes|
         message_attributes = Sqs::MessageAttributes.from_h(attributes[:message_attributes])
-        current_retry = message_attributes.retry_sequence.current
+        current_retry = message_attributes.history_sequence.current
         expect(current_retry).to include(
           response_type: 'error',
           class: 'StandardError',
@@ -38,7 +38,7 @@ describe Sqs::Job, auto_configure: true do
       job.complete
     end
 
-    it 'updates the retry sequence with failure details for a txgh response' do
+    it 'updates the history sequence with failure details for a txgh response' do
       response = TxghServer::Response.new(502, 'Bad gateway')
       result = Result.new(status, response)
       expect(job).to receive(:process).with(body).and_return(result)
@@ -46,7 +46,7 @@ describe Sqs::Job, auto_configure: true do
       # this call to send_message signifies a retry
       expect(send(queue_sym)).to receive(:send_message) do |body, attributes|
         message_attributes = Sqs::MessageAttributes.from_h(attributes[:message_attributes])
-        current_retry = message_attributes.retry_sequence.current
+        current_retry = message_attributes.history_sequence.current
         expect(current_retry).to include(
           response_type: 'response',
           code: 502,
@@ -94,7 +94,7 @@ describe Sqs::Job, auto_configure: true do
         expect(Txgh.events).to receive(:publish_error).and_return(foo: 'bar')
         expect(failure_queue).to receive(:send_message) do |body, attributes|
           message_attributes = Sqs::MessageAttributes.from_h(attributes[:message_attributes])
-          current_retry = message_attributes.retry_sequence.current
+          current_retry = message_attributes.history_sequence.current
           expect(current_retry).to include(error_tracking: { foo: 'bar' })
         end
 
@@ -118,8 +118,8 @@ describe Sqs::Job, auto_configure: true do
         # this call to send_message signifies a retry
         expect(queue).to receive(:send_message) do |body, attributes|
           message_attributes = Sqs::MessageAttributes.from_h(attributes[:message_attributes])
-          retry_sequence = message_attributes.retry_sequence.sequence.map { |elem| elem[:status] }
-          expect(retry_sequence).to eq(%w(retry_without_delay))
+          history_sequence = message_attributes.history_sequence.sequence.map { |elem| elem[:status] }
+          expect(history_sequence).to eq(%w(retry_without_delay))
           new_message
         end
 
@@ -134,8 +134,8 @@ describe Sqs::Job, auto_configure: true do
         # this call to send_message signifies a retry
         expect(queue).to receive(:send_message) do |body, attributes|
           message_attributes = Sqs::MessageAttributes.from_h(attributes[:message_attributes])
-          retry_sequence = message_attributes.retry_sequence.sequence.map { |elem| elem[:status] }
-          expect(retry_sequence).to eq(%w(retry_with_delay))
+          history_sequence = message_attributes.history_sequence.sequence.map { |elem| elem[:status] }
+          expect(history_sequence).to eq(%w(retry_with_delay))
 
           expect(attributes[:delay_seconds]).to eq(
             Sqs::RetryLogic::DELAY_INTERVALS.first
@@ -150,7 +150,7 @@ describe Sqs::Job, auto_configure: true do
       context 'with all retries exceeded' do
         let(:message) do
           SqsTestMessage.new('123abc', body.to_json, {
-            'retry_sequence' => {
+            'history_sequence' => {
               'string_value' => (Sqs::RetryLogic::OVERALL_MAX_RETRIES - 1).times.map do
                 { status: 'retry_without_delay' }
               end.to_json
@@ -167,8 +167,8 @@ describe Sqs::Job, auto_configure: true do
         end
       end
 
-      it_behaves_like "it updates the message's retry sequence", Status.retry_without_delay, :queue
-      it_behaves_like "it updates the message's retry sequence", Status.retry_with_delay, :queue
+      it_behaves_like "it updates the message's history sequence", Status.retry_without_delay, :queue
+      it_behaves_like "it updates the message's history sequence", Status.retry_with_delay, :queue
     end
 
     context 'failures' do
@@ -183,7 +183,7 @@ describe Sqs::Job, auto_configure: true do
         job.complete
       end
 
-      it_behaves_like "it updates the message's retry sequence", Status.fail, :failure_queue
+      it_behaves_like "it updates the message's history sequence", Status.fail, :failure_queue
     end
   end
 end

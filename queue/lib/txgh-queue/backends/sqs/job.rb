@@ -13,7 +13,7 @@ module TxghQueue
 
           # add empty retry attributes hash to sequence - will be populated when
           # the complete method is called
-          message_attributes.retry_sequence.add({})
+          message_attributes.history_sequence.add({})
 
           super(logger)
         end
@@ -22,7 +22,7 @@ module TxghQueue
           result = process(payload)
           logger.info("Finished processing #{message.message_id}, result: #{result.status}")
 
-          message_attributes.retry_sequence.current.merge!(attributes_for(result))
+          message_attributes.history_sequence.current.merge!(attributes_for(result))
 
           return do_ok(result) if result.status.ok?
           return do_retry(result) if result.status.retry?

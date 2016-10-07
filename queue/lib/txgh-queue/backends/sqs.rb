@@ -5,12 +5,12 @@ module TxghQueue
     module Sqs
       autoload :Config,            'txgh-queue/backends/sqs/config'
       autoload :Consumer,          'txgh-queue/backends/sqs/consumer'
+      autoload :HistorySequence,   'txgh-queue/backends/sqs/history_sequence'
       autoload :Job,               'txgh-queue/backends/sqs/job'
       autoload :MessageAttributes, 'txgh-queue/backends/sqs/message_attributes'
       autoload :Producer,          'txgh-queue/backends/sqs/producer'
       autoload :Queue,             'txgh-queue/backends/sqs/queue'
       autoload :RetryLogic,        'txgh-queue/backends/sqs/retry_logic'
-      autoload :RetrySequence,     'txgh-queue/backends/sqs/retry_sequence'
 
       class << self
         def producer_for(events, logger = Txgh::TxLogger.logger)

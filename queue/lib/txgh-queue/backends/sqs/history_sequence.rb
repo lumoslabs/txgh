@@ -4,12 +4,12 @@ require 'txgh'
 module TxghQueue
   module Backends
     module Sqs
-      class RetrySequence
+      class HistorySequence
         extend Forwardable
 
         class << self
           def from_message(message)
-            if attribute = message.message_attributes['retry_sequence']
+            if attribute = message.message_attributes['history_sequence']
               new(JSON.parse(attribute.string_value))
             else
               new([])
@@ -20,7 +20,7 @@ module TxghQueue
             new(
               JSON.parse(
                 Txgh::Utils.deep_symbolize_keys(hash)
-                  .fetch(:retry_sequence, {})
+                  .fetch(:history_sequence, {})
                   .fetch(:string_value, nil)
               )
             )
