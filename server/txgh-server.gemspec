@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'sinatra-contrib', '~> 1.4'
   s.add_dependency 'rubyzip', '>= 1.0', '<= 1.1.2'
   s.add_dependency 'txgh', '~> 6.1'
-  # s.add_dependency 'txgh-queue', '~> 1.0'
 
   s.require_path = 'lib'
   s.files = Dir['{lib,spec}/**/*', 'README.md', 'txgh-server.gemspec', 'LICENSE']
