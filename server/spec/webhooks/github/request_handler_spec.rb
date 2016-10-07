@@ -143,7 +143,7 @@ describe Github::RequestHandler do
 
           it 'responds with an ok status code' do
             response = handler.enqueue
-            expect(response.status).to eq(200)
+            expect(response.status).to eq(202)
           end
         end
       end
@@ -185,7 +185,7 @@ describe Github::RequestHandler do
 
           it 'responds with an ok status code' do
             response = handler.enqueue
-            expect(response.status).to eq(200)
+            expect(response.status).to eq(202)
           end
         end
       end

@@ -53,7 +53,7 @@ module TxghServer
                   .producer_for(txgh_event, logger)
                   .enqueue(attributes.to_h.merge(txgh_event: txgh_event))
 
-                respond_with(200, result.to_json)
+                respond_with(202, result.to_json)
               else
                 respond_with_error(400, "Event '#{github_event}' cannot be enqueued")
             end

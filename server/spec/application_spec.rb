@@ -199,7 +199,7 @@ describe TxghServer::WebhookEndpoints do
           change { producer.enqueued_jobs.size }.from(0).to(1)
         )
 
-        expect(last_response).to be_ok
+        expect(last_response).to be_accepted
 
         job = producer.enqueued_jobs.first
         expect(job[:payload]).to include(
@@ -300,7 +300,7 @@ describe TxghServer::WebhookEndpoints do
             change { producer.enqueued_jobs.size }.from(0).to(1)
           )
 
-          expect(last_response).to be_ok
+          expect(last_response).to be_accepted
 
           job = producer.enqueued_jobs.first
           expect(job[:payload]).to include(

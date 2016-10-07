@@ -7,6 +7,10 @@ module TxghQueue
         TxghQueue::Backends.get(raw_config[:backend])
       end
 
+      def processing_enabled?
+        raw_config.fetch(:processing_enabled, true)
+      end
+
       def options
         raw_config[:options]
       end

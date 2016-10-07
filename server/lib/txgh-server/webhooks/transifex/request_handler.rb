@@ -49,7 +49,7 @@ module TxghServer
               .producer_for(txgh_event, logger)
               .enqueue(payload.merge(txgh_event: txgh_event))
 
-            respond_with(200, result.to_json)
+            respond_with(202, result.to_json)
           end
         end
 
