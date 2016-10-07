@@ -28,8 +28,8 @@ module TxghServer
             handler = TxghServer::Webhooks::Transifex::HookHandler.new(
               project: config.transifex_project,
               repo: config.github_repo,
-              resource_slug: payload['resource'],
-              language: payload['language'],
+              resource_slug: payload[:resource],
+              language: payload[:language],
               logger: logger
             )
 
@@ -88,13 +88,16 @@ module TxghServer
         end
 
         def config
-          @config ||= Txgh::Config::KeyManager.config_from_project(payload['project'])
+          @config ||= Txgh::Config::KeyManager.config_from_project(payload[:project])
         end
 
         def payload
           @payload ||= begin
             request.body.rewind
-            Hash[URI.decode_www_form(request.body.read)]
+
+            Txgh::Utils.deep_symbolize_keys(
+              Hash[URI.decode_www_form(request.body.read)]
+            )
           end
         end
 

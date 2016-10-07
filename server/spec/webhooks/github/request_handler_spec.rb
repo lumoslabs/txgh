@@ -5,9 +5,9 @@ require 'helpers/standard_txgh_setup'
 require 'helpers/test_request'
 require 'helpers/test_backend'
 
-include TxghServer::Webhooks::Github
+include TxghServer::Webhooks
 
-describe RequestHandler do
+describe Github::RequestHandler do
   include StandardTxghSetup
 
   let(:logger) { NilLogger.new }
@@ -23,7 +23,7 @@ describe RequestHandler do
       let(:payload) { GithubPayloadBuilder.push_payload(repo_name, ref).tap { |p| p.add_commit } }
 
       it 'does not execute if unauthorized' do
-        expect_any_instance_of(PushHandler).to_not receive(:execute)
+        expect_any_instance_of(Github::PushHandler).to_not receive(:execute)
         response = handler.handle_request
         expect(response.status).to eq(401)
       end
@@ -34,7 +34,7 @@ describe RequestHandler do
         end
 
         it 'handles the request with the push handler' do
-          expect_any_instance_of(PushHandler).to receive(:execute).and_return(:response)
+          expect_any_instance_of(Github::PushHandler).to receive(:execute).and_return(:response)
           expect(handler.handle_request).to eq(:response)
         end
       end
@@ -45,7 +45,7 @@ describe RequestHandler do
       let(:payload) { GithubPayloadBuilder.delete_payload(repo_name, ref) }
 
       it 'does not execute if unauthorized' do
-        expect_any_instance_of(DeleteHandler).to_not receive(:execute)
+        expect_any_instance_of(Github::DeleteHandler).to_not receive(:execute)
         response = handler.handle_request
         expect(response.status).to eq(401)
       end
@@ -56,7 +56,7 @@ describe RequestHandler do
         end
 
         it 'handles the request with the delete handler' do
-          expect_any_instance_of(DeleteHandler).to receive(:execute).and_return(:response)
+          expect_any_instance_of(Github::DeleteHandler).to receive(:execute).and_return(:response)
           expect(handler.handle_request).to eq(:response)
         end
       end
@@ -130,6 +130,17 @@ describe RequestHandler do
             )
           end
 
+          it 'enqueues with the correct parameters' do
+            handler.enqueue
+            params = producer.enqueued_jobs.first
+            expect(params[:payload]).to include(
+              event: 'push',
+              txgh_event: 'github.push',
+              ref: "refs/#{ref}",
+              repo_name: repo_name
+            )
+          end
+
           it 'responds with an ok status code' do
             response = handler.enqueue
             expect(response.status).to eq(200)
@@ -158,6 +169,17 @@ describe RequestHandler do
           it 'enqueues the job' do
             expect { handler.enqueue }.to(
               change { producer.enqueued_jobs.size }.from(0).to(1)
+            )
+          end
+
+          it 'enqueues with the correct parameters' do
+            handler.enqueue
+            params = producer.enqueued_jobs.first
+            expect(params[:payload]).to include(
+              event: 'delete',
+              txgh_event: 'github.delete',
+              ref: "refs/#{ref}",
+              repo_name: repo_name
             )
           end
 
