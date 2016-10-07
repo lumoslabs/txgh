@@ -4,11 +4,11 @@ require 'helpers/sqs/sqs_test_message'
 include TxghQueue
 include TxghQueue::Backends
 
-describe Sqs::RetrySequence do
+describe Sqs::HistorySequence do
   let(:message) { SqsTestMessage.new('abc123', '{}', attributes_hash) }
   let(:attributes_hash) do
     {
-      'retry_sequence' => {
+      'history_sequence' => {
         'string_value' => [{
           'status' => 'retry_without_delay'
         }].to_json
@@ -75,7 +75,7 @@ describe Sqs::RetrySequence do
     describe '#partition' do
       let(:attributes_hash) do
         {
-          'retry_sequence' => {
+          'history_sequence' => {
             'string_value' => [
               { 'status' => 'retry_without_delay' },
               { 'status' => 'retry_without_delay' },

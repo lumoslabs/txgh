@@ -68,7 +68,7 @@ module TxghQueue
         end
 
         def max_overall_retries_exceeded?
-          retry_sequence.size >= OVERALL_MAX_RETRIES
+          history_sequence.size >= OVERALL_MAX_RETRIES
         end
 
         def max_sequential_delays_exceeded?
@@ -95,7 +95,7 @@ module TxghQueue
         end
 
         def current_sequence
-          if sequence = partitioned_retry_sequence.last
+          if sequence = partitioned_history_sequence.last
             if last_elem = sequence.last
               if current_status.status.to_s == last_elem
                 return sequence
@@ -106,12 +106,12 @@ module TxghQueue
           []
         end
 
-        def partitioned_retry_sequence
-          @partitioned_retry_sequence ||= retry_sequence.partition
+        def partitioned_history_sequence
+          @partitioned_history_sequence ||= history_sequence.partition
         end
 
-        def retry_sequence
-          message_attributes.retry_sequence
+        def history_sequence
+          message_attributes.history_sequence
         end
       end
     end

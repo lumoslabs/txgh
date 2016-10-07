@@ -5,7 +5,7 @@ module TxghQueue
   module Backends
     module Sqs
       class Consumer
-        RECEIVE_PARAMS = { message_attribute_names: %w(retry_sequence) }
+        RECEIVE_PARAMS = { message_attribute_names: %w(history_sequence) }
 
         attr_reader :queues, :logger
 
