@@ -28,9 +28,9 @@ module TxghServer
           handle_safely do
             case github_event
               when 'push'
-                PushHandler.new(project, repo, logger, attributes.to_h).execute
+                PushHandler.new(project, repo, logger, attributes).execute
               when 'delete'
-                DeleteHandler.new(project, repo, logger, attributes.to_h).execute
+                DeleteHandler.new(project, repo, logger, attributes).execute
               when 'ping'
                 PingHandler.new(logger).execute
               else
