@@ -71,33 +71,5 @@ describe Sqs::HistorySequence do
         expect(sequence.current).to eq(status: 'retry_without_delay')
       end
     end
-
-    describe '#partition' do
-      let(:attributes_hash) do
-        {
-          'history_sequence' => {
-            'string_value' => [
-              { 'status' => 'retry_without_delay' },
-              { 'status' => 'retry_without_delay' },
-              { 'status' => 'retry_with_delay' },
-              { 'status' => 'retry_without_delay' },
-              { 'status' => 'retry_with_delay' },
-              { 'status' => 'retry_with_delay' },
-              { 'status' => 'retry_without_delay' }
-            ].to_json
-          }
-        }
-      end
-
-      it 'separates the sequence into runs based on the status' do
-        expect(sequence.partition).to eq([
-          %w(retry_without_delay retry_without_delay),
-          %w(retry_with_delay),
-          %w(retry_without_delay),
-          %w(retry_with_delay retry_with_delay),
-          %w(retry_without_delay),
-        ])
-      end
-    end
   end
 end

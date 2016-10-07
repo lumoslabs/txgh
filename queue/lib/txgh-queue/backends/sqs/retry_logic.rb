@@ -95,19 +95,18 @@ module TxghQueue
         end
 
         def current_sequence
-          if sequence = partitioned_history_sequence.last
-            if last_elem = sequence.last
-              if current_status.status.to_s == last_elem
-                return sequence
-              end
-            end
-          end
-
-          []
+          return [] unless sequence = chunked_history_sequence.last
+          return [] unless last_elem = sequence.last
+          return [] unless current_status.status.to_s == last_elem
+          sequence
         end
 
-        def partitioned_history_sequence
-          @partitioned_history_sequence ||= history_sequence.partition
+        def chunked_history_sequence
+          @chunked_history_sequence ||= history_sequence.lazy
+            .map { |elem| elem[:status] }
+            .chunk(&:itself)
+            .map(&:last)
+            .to_a
         end
 
         def history_sequence

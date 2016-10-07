@@ -6,6 +6,7 @@ module TxghQueue
     module Sqs
       class HistorySequence
         extend Forwardable
+        include Enumerable
 
         class << self
           def from_message(message)
@@ -44,22 +45,16 @@ module TxghQueue
         end
 
         def dup
-          # use json serialization to deep copy the sequence
-          self.class.new(JSON.parse(sequence.to_json))
+          # use marshal serialization to deep copy the sequence
+          self.class.new(Marshal.load(Marshal.dump(sequence)))
         end
 
         def current
           sequence.last
         end
 
-        def partition
-          sequence.each_with_object([]) do |elem, ret|
-            if ret.last && ret.last.last == elem[:status]
-              ret.last << elem[:status]
-            elsif elem[:status]
-              ret << [elem[:status]]
-            end
-          end
+        def each(&block)
+          sequence.each(&block)
         end
       end
     end

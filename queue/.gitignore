@@ -5,3 +5,4 @@ Gemfile.lock
 .ruby-version
 pkg/
 .DS_Store
+.bundle/
