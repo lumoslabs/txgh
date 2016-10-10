@@ -54,6 +54,8 @@ module TxghServer
                   .enqueue(attributes.to_h.merge(txgh_event: txgh_event))
 
                 respond_with(202, result.to_json)
+              when 'ping'
+                PingHandler.new(logger).execute
               else
                 respond_with_error(400, "Event '#{github_event}' cannot be enqueued")
             end
