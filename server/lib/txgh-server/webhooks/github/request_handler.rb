@@ -41,10 +41,6 @@ module TxghServer
 
         def enqueue
           handle_safely do
-            unless queue_configured?
-              return respond_with_error(500, 'Queue not configured')
-            end
-
             case github_event
               when 'push', 'delete'
                 txgh_event = "github.#{github_event}"
@@ -63,14 +59,6 @@ module TxghServer
         end
 
         private
-
-        def queue_configured?
-          TxghQueue::Config.backend
-        rescue StandardError
-          false
-        else
-          true
-        end
 
         def attributes
           case github_event

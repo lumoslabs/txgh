@@ -4,6 +4,8 @@ module TxghServer
   module Webhooks
     module Transifex
       class RequestHandler
+        TXGH_EVENT = 'transifex.hook'
+
         class << self
           def handle_request(request, logger)
             new(request, logger).handle_request
@@ -39,29 +41,15 @@ module TxghServer
 
         def enqueue
           handle_safely do
-            unless queue_configured?
-              return respond_with_error(500, 'Queue not configured')
-            end
-
-            txgh_event = 'transifex.hook'
-
             result = TxghQueue::Config.backend
-              .producer_for(txgh_event, logger)
-              .enqueue(payload.merge(txgh_event: txgh_event))
+              .producer_for(TXGH_EVENT, logger)
+              .enqueue(payload.merge(txgh_event: TXGH_EVENT))
 
             respond_with(202, result.to_json)
           end
         end
 
         private
-
-        def queue_configured?
-          TxghQueue::Config.backend
-        rescue StandardError
-          false
-        else
-          true
-        end
 
         def handle_safely
           if authentic_request?

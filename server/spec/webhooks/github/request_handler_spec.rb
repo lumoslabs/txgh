@@ -81,7 +81,11 @@ describe Github::RequestHandler do
     it "responds with an error when a queue backend isn't configured" do
       allow(handler).to receive(:authentic_request?).and_return(true)
       response = handler.enqueue
-      expect(response.body.first[:error]).to eq('Queue not configured')
+
+      expect(response.body.first[:error]).to(
+        eq('Internal server error: No queue backend has been configured')
+      )
+
       expect(response.status).to eq(500)
     end
 
