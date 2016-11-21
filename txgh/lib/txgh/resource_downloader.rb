@@ -39,10 +39,11 @@ module Txgh
           head_resource.original_resource_slug, repo.diff_point
         )
 
+        br = repo.process_all_branches? ? branch : repo.branch
         source_diff = source_diff_hash(head_resource, diff_point_resource)
-        head_content = wrap(transifex_download(head_resource, language_code), head_resource)
-        diff_point_content = wrap(transifex_download(diff_point_resource, language_code), diff_point_resource)
-        contents = diff_point_content.merge(head_content, source_diff)
+        new_content = wrap(transifex_download(head_resource, language_code), head_resource)
+        existing_content = wrap(git_download(head_resource, br, language_code), head_resource)
+        contents = existing_content.merge(head_content, source_diff)
 
         yield file_name, contents.to_s(language_code)
       end
@@ -103,8 +104,14 @@ module Txgh
       nil
     end
 
-    def git_download(resource, branch)
-      repo.api.download(resource.source_file, branch)[:content]
+    def git_download(resource, branch, language = nil)
+      file = if language
+        resource.translation_path(language)
+      else
+        resource.source_file
+      end
+
+      repo.api.download(file, branch)[:content]
     rescue Octokit::NotFound
       # return nil here so wrap() will return an instance of EmptyResourceContents
       nil
