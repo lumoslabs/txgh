@@ -1,4 +1,4 @@
-require 'celluloid/current'
+require 'celluloid'
 
 module Txgh
   class GitStatus
