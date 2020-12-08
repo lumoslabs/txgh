@@ -57,7 +57,7 @@ describe Txgh::Utils do
     end
 
     it 'does nothing if no prefix can be removed' do
-      expect(described_class.url_safe_relative_branch('feature/JIRA-abcdef')).to eq('feature%2FJIRA-abcdef')
+      expect(described_class.url_safe_relative_branch('feature/foo-ticket')).to eq('feature%2Ffoo-ticket')
     end
   end
 

@@ -1,3 +1,6 @@
+# 4.0.4
+* Update txgh to v7.0.3.
+
 # 4.0.3
 * Update txgh to v7.0.2.
 
