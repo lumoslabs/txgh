@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'celluloid', '~> 0.18.0'
   s.add_dependency 'faraday', '0.17.3'
   s.add_dependency 'faraday_middleware', '0.14.0'
-  s.add_dependency 'json', '~> 1.8'
+  s.add_dependency 'json', '~> 2.3'
   s.add_dependency 'octokit', '~> 4.2'
   s.add_dependency 'gitlab', '~> 4.14'
   s.add_dependency 'parseconfig', '~> 1.0'
