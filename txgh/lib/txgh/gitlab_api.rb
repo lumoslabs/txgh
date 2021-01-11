@@ -48,7 +48,7 @@ module Txgh
     end
 
     def download(path, branch)
-      file = client.get_file(repo_name, path, Utils.url_safe_relative_branch(branch))
+      file = client.get_file(repo_name, Utils.url_safe_relative_branch(path), branch)
 
       # mock github response
       {
