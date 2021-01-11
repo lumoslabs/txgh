@@ -58,7 +58,7 @@ module Txgh
     end
 
     def create_status(sha, state, options = {})
-      client.update_commit_status(repo_name, sha, state, options)
+      client.update_commit_status(repo_name, Utils.url_safe_relative_branch(sha), state, options)
     rescue ::Gitlab::Error::BadRequest => error
       # Gitlab pipeline may have several jobs and txgh should not override commit statuses set by others
       raise error unless error.message.include?('Cannot transition status')
