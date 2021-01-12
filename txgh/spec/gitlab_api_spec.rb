@@ -23,13 +23,13 @@ describe Txgh::GitlabApi do
 
       expect(client).to(
         receive(:get_file)
-          .with(repo, path, url_safe_branch)
+          .with(repo, path, filtered_branch)
           .and_return(double(blob_id: old_sha))
       )
 
       expect(client).to(
         receive(:edit_file)
-          .with(repo, path, url_safe_branch, new_contents, 'message')
+          .with(repo, path, filtered_branch, new_contents, 'message')
       )
 
       api.update_contents(branch, [{ path: path, contents: new_contents }], 'message')
@@ -38,7 +38,7 @@ describe Txgh::GitlabApi do
     it "doesn't update the file contents if the file hasn't changed" do
       expect(client).to(
         receive(:get_file)
-          .with(repo, path, url_safe_branch)
+          .with(repo, path, filtered_branch)
           .and_return(double(blob_id: old_sha))
       )
 
@@ -53,7 +53,7 @@ describe Txgh::GitlabApi do
 
       expect(client).to(
         receive(:edit_file)
-          .with(repo, path, url_safe_branch, new_contents, 'message')
+          .with(repo, path, filtered_branch, new_contents, 'message')
       )
 
       api.update_contents(branch, [{ path: path, contents: new_contents }], 'message')
@@ -64,7 +64,7 @@ describe Txgh::GitlabApi do
     it 'downloads the file from the given branch' do
       expect(client).to(
         receive(:get_file)
-          .with(repo, path, url_safe_branch)
+          .with(repo, path, filtered_branch)
           .and_return(double(content: 'content', encoding: 'utf-8'))
       )
 
@@ -76,7 +76,7 @@ describe Txgh::GitlabApi do
 
       expect(client).to(
         receive(:get_file)
-          .with(repo, path, url_safe_branch)
+          .with(repo, path, filtered_branch)
           .and_return(double(content: content, encoding: 'utf-16'))
       )
 
@@ -88,7 +88,7 @@ describe Txgh::GitlabApi do
     it 'automatically decodes base64-encoded content' do
       expect(client).to(
         receive(:get_file)
-          .with(repo, path, url_safe_branch)
+          .with(repo, path, filtered_branch)
           .and_return(double(content: Base64.encode64('content'), encoding: 'base64'))
       )
 
@@ -103,14 +103,14 @@ describe Txgh::GitlabApi do
 
     context 'when master branch' do
       let(:branch) { 'master' }
-      let(:url_safe_branch) { 'master' }
+      let(:filtered_branch) { 'master' }
 
       it_behaves_like 'an update_contents flow'
     end
 
     context 'when feature branch' do
-      let(:branch) { 'feature/foo-ticket' }
-      let(:url_safe_branch) { 'feature%2Ffoo-ticket' }
+      let(:branch) { 'heads/feature/foo-ticket' }
+      let(:filtered_branch) { 'feature/foo-ticket' }
 
       it_behaves_like 'an update_contents flow'
     end
@@ -149,14 +149,14 @@ describe Txgh::GitlabApi do
 
     context 'when master branch' do
       let(:branch) { 'master' }
-      let(:url_safe_branch) { 'master' }
+      let(:filtered_branch) { 'master' }
 
       it_behaves_like 'a download flow'
     end
 
     context 'when feature branch' do
-      let(:branch) { 'feature/foo-ticket' }
-      let(:url_safe_branch) { 'feature%2Ffoo-ticket' }
+      let(:branch) { 'heads/feature/foo-ticket' }
+      let(:filtered_branch) { 'feature/foo-ticket' }
 
       it_behaves_like 'a download flow'
     end
