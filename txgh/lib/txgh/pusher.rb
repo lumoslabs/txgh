@@ -25,7 +25,6 @@ module Txgh
     end
 
     def push_resources(tx_resources, &block)
-      logger.info('>>> PING')
       tx_resources.each do |tx_resource|
         categories = block_given? ? yield(tx_resource) : {}
         push_resource(tx_resource, categories)

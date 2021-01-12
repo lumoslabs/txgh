@@ -16,7 +16,7 @@ module Txgh
       content_list.each do |file_params|
         path = file_params.fetch(:path)
         new_contents = file_params.fetch(:contents)
-        branch = Utils.url_safe_relative_branch(branch)
+        branch = Utils.relative_branch(branch)
 
         file_sha = file_params.fetch(:sha) do
           begin
@@ -48,7 +48,7 @@ module Txgh
     end
 
     def download(path, branch)
-      file = client.get_file(repo_name, Utils.url_safe_relative_branch(path), branch)
+      file = client.get_file(repo_name, path, Utils.relative_branch(branch))
 
       # mock github response
       {
