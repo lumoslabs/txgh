@@ -442,7 +442,7 @@ http_interactions:
   recorded_at: Thu, 26 Mar 2020 17:45:43 GMT
 - request:
     method: post
-    uri: https://gitlab.com/api/v4/projects/idanci%2Ftxgl-test/statuses/1184cbc1?context=continuous-localization/txgh&description=12/24%20translations%20complete.&state=pending&target_url=https://www.transifex.com/lumos-labs/txgl-test/content
+    uri: https://gitlab.com/api/v4/projects/idanci%2Ftxgl-test/statuses/1184cbc1
     body:
       encoding: UTF-8
       string: ''
