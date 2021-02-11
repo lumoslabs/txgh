@@ -1,3 +1,6 @@
+# 3.0.4
+* Update txgh to v7.0.3 and txgh-server to v4.0.4.
+
 # 3.0.3
 * Update txgh to v7.0.2 and txgh-server to v4.0.3.
 

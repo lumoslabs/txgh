@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'puma'
+gem 'puma', '~> 4.3', '>= 4.3.7'
 
-gem 'txgh', '7.0.2'
-gem 'txgh-queue', '3.0.3'
-gem 'txgh-server', '4.0.3'
+gem 'txgh', '7.0.3'
+gem 'txgh-queue', '3.0.4'
+gem 'txgh-server', '4.0.4'
 
 group :development, :test do
   gem 'rack'

@@ -1,3 +1,6 @@
+# 7.0.3
+* Use url encoded branch name for gitlab.
+
 # 7.0.2
 * Don't raise error when cannot update GitLab status.
 
